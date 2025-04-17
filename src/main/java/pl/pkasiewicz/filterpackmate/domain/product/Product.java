@@ -1,7 +1,11 @@
-package pl.pkasiewicz.filterpackmate.domain.entity;
+package pl.pkasiewicz.filterpackmate.domain.product;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
+import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
+import pl.pkasiewicz.filterpackmate.domain.side.Side;
+import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 
 import java.util.List;
 
