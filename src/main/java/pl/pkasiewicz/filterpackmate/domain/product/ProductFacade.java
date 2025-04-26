@@ -21,7 +21,10 @@ public class ProductFacade {
     }
 
     public List<ProductResponseDto> getAllProducts () {
-        return null;
+        return productRepository.findAll()
+                .stream()
+                .map(ProductMapper::mapToDto)
+                .toList();
     }
 
     public ProductResponseDto deleteProduct (ProductRequestDto product) {

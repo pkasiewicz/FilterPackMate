@@ -64,18 +64,25 @@ class ProductFacadeTest {
         assertThat(savedProduct.carton).isEqualTo(returnedFromDb.carton);
         assertThat(savedProduct.tray).isEqualTo(returnedFromDb.tray);
         assertThat(savedProduct.pallet).isEqualTo(returnedFromDb.pallet);
-
     }
 
 
     @Test
     void should_return_all_products() {
         // given
+        List<Product> products = List.of(
+                new Product(1L, new Carton(1L, "PCA-1", null), new Tray(1L, "DE165", null), Pallet.EURO, null, null),
+                new Product(2L, new Carton(2L, "PCA-2", null), new Tray(2L, "DE152", null), Pallet.GM6, null, null),
+                new Product(3L, new Carton(3L, "PCA-3", null), new Tray(3L, "DE178", null), Pallet.HG5, null, null)
+        );
 
         // when
+        when(productRepository.findAll()).thenReturn(products);
+        productFacade.getAllProducts();
 
         // then
-
+        verify(productRepository).findAll();
+        assertThat(productFacade.getAllProducts()).hasSize(3);
     }
 
     @Test
