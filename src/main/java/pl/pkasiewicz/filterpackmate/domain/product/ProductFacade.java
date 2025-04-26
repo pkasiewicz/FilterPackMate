@@ -1,4 +1,30 @@
 package pl.pkasiewicz.filterpackmate.domain.product;
 
+import lombok.AllArgsConstructor;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+
+import java.util.List;
+
+@AllArgsConstructor
 public class ProductFacade {
+
+    private final ProductRepository productRepository;
+
+    public ProductResponseDto addNewProduct (ProductRequestDto product) {
+        Product savedProduct = productRepository.save(ProductMapper.mapToEntity(product));
+        return ProductMapper.mapToDto(savedProduct);
+    }
+
+    public ProductResponseDto getProductById (Long id) {
+        return null;
+    }
+
+    public List<ProductResponseDto> getAllProducts () {
+        return null;
+    }
+
+    public ProductResponseDto deleteProduct (ProductRequestDto product) {
+        return null;
+    }
 }
