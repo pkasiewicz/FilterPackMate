@@ -9,10 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,7 +57,7 @@ class ProductFacadeTest {
         );
         // when
         when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
-        productFacade.addNewProduct(productRequestDto);
+        productFacade.saveProduct(productRequestDto);
 
         // then
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
@@ -98,11 +100,28 @@ class ProductFacadeTest {
     @Test
     void should_return_product_by_id() {
         // given
+        Long id = 1L;
+        Product product = new Product(
+                1L,
+                new Carton(1L, "PCA-12", null),
+                new Tray(1L, "DE165", null),
+                Pallet.EURO,
+                List.of(
+                        new Divider(1L, "E-1", null)
+                ),
+                List.of(
+                        new Side(1L, "BE900B", null)
+                )
+        );
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        ProductResponseDto productResponseDto = ProductMapper.mapToDto(product);
 
         // when
+        ProductResponseDto responseDto = productFacade.getProductById(id);
 
         // then
-
+        verify(productRepository).findById(id);
+        assertThat(responseDto).isEqualTo(productResponseDto);
     }
 
     @Test
