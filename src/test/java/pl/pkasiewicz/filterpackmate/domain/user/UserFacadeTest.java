@@ -33,16 +33,19 @@ class UserFacadeTest {
         UserRequestDto requestDto = new UserRequestDto("user", "password");
         User returnedFromDb = new User(1L, "user", "password");
 
-        // when
         when(userRepository.save(any(User.class))).thenReturn(returnedFromDb);
-        userFacade.registerUser(requestDto);
+
+        // when
+        UserResponseDto response = userFacade.registerUser(requestDto);
 
         // then
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        User savedUser = captor.getValue();
+
         assertThat(savedUser.getUsername()).isEqualTo(requestDto.username());
         assertThat(savedUser.getPassword()).isEqualTo(requestDto.password());
+        assertThat(response.username()).isEqualTo("user");
     }
 
     @Test

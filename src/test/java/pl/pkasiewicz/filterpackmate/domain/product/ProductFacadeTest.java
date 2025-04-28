@@ -58,17 +58,21 @@ class ProductFacadeTest {
                         new Side(1L, "BE900B", null)
                 )
         );
-        // when
+
         when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
-        productFacade.saveProduct(productRequestDto);
+
+        // when
+        ProductResponseDto response = productFacade.saveProduct(productRequestDto);
 
         // then
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository).save(captor.capture());
         Product savedProduct = captor.getValue();
+
         assertThat(savedProduct.carton).isEqualTo(returnedFromDb.carton);
         assertThat(savedProduct.tray).isEqualTo(returnedFromDb.tray);
         assertThat(savedProduct.pallet).isEqualTo(returnedFromDb.pallet);
+        assertThat(response.id()).isEqualTo(returnedFromDb.id);
     }
 
 
@@ -81,13 +85,17 @@ class ProductFacadeTest {
                 new Product(3L, new Carton(3L, "PCA-3", null), new Tray(3L, "DE178", null), Pallet.HG5, null, null)
         );
 
-        // when
         when(productRepository.findAll()).thenReturn(products);
-        productFacade.getAllProducts();
+
+        // when
+        List<ProductResponseDto> response = productFacade.getAllProducts();
 
         // then
         verify(productRepository).findAll();
-        assertThat(productFacade.getAllProducts()).hasSize(3);
+        assertThat(response).hasSize(3);
+        assertThat(response).extracting(ProductResponseDto::carton)
+                .extracting(Carton::getName)
+                .containsExactly("PCA-1", "PCA-2", "PCA-3");
     }
 
     @Test
@@ -106,6 +114,7 @@ class ProductFacadeTest {
                         new Side(1L, "BE900B", null)
                 )
         );
+
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
         ProductResponseDto productResponseDto = ProductMapper.mapToDto(product);
 
@@ -115,6 +124,15 @@ class ProductFacadeTest {
         // then
         verify(productRepository).findById(id);
         assertThat(responseDto).isEqualTo(productResponseDto);
+    }
+
+    @Test
+    void should_return_empty_list_when_no_products_exist() {
+        when(productRepository.findAll()).thenReturn(List.of());
+
+        List<ProductResponseDto> response = productFacade.getAllProducts();
+        verify(productRepository).findAll();
+        assertThat(response).isEmpty();
     }
 
     @Test
