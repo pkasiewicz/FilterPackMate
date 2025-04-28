@@ -29,8 +29,4 @@ public class ProductFacade {
                 .map(ProductMapper::mapToDto)
                 .toList();
     }
-
-    public ProductResponseDto deleteProduct(ProductRequestDto product) {
-        return null;
-    }
 }

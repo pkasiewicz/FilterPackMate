@@ -6,10 +6,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.product.exception.ProductNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,16 +91,6 @@ class ProductFacadeTest {
     }
 
     @Test
-    void should_delete_product() {
-        // given
-
-        // when
-
-        // then
-
-    }
-
-    @Test
     void should_return_product_by_id() {
         // given
         Long id = 1L;
@@ -127,20 +120,34 @@ class ProductFacadeTest {
     @Test
     void should_throw_exception_when_product_with_given_id_does_not_exist() {
         // given
+        Long id = 1L;
+        when(productRepository.findById(id)).thenReturn(Optional.empty());
 
-        // when
+        // when && then
+        assertThrows(ProductNotFoundException.class, () -> productFacade.getProductById(id));
 
-        // then
-
+        verify(productRepository).findById(id);
     }
 
     @Test
     void should_throw_exception_when_product_with_given_name_already_exist() {
         // given
+        ProductRequestDto productRequestDto = new ProductRequestDto(
+                new Carton(1L, "PCA-12", null),
+                new Tray(1L, "DE165", null),
+                Pallet.EURO,
+                List.of(
+                        new Divider(1L, "E-1", null)
+                ),
+                List.of(
+                        new Side(1L, "BE900B", null)
+                )
+        );
 
-        // when
+        when(productRepository.save(any(Product.class))).thenThrow(new DuplicateKeyException("product already exists"));
 
-        // then
-
+        // when && then
+        assertThrows(DuplicateKeyException.class, () -> productFacade.saveProduct(productRequestDto));
+        verify(productRepository).save(any(Product.class));
     }
 }
