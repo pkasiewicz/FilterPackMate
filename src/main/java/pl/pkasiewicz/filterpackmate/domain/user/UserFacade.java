@@ -3,7 +3,7 @@ package pl.pkasiewicz.filterpackmate.domain.user;
 import lombok.AllArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.UserRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.UserResponseDto;
-import pl.pkasiewicz.filterpackmate.domain.user.exception.UserNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.user.exceptions.UserNotFoundException;
 
 
 @AllArgsConstructor

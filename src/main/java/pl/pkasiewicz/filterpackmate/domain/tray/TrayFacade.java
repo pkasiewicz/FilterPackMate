@@ -3,7 +3,7 @@ package pl.pkasiewicz.filterpackmate.domain.tray;
 import lombok.AllArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayResponseDto;
-import pl.pkasiewicz.filterpackmate.domain.tray.excteption.TrayNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayNotFoundException;
 
 import java.util.List;
 

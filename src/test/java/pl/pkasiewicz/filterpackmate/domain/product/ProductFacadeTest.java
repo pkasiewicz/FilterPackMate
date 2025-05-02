@@ -11,7 +11,7 @@ import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
-import pl.pkasiewicz.filterpackmate.domain.product.exception.ProductNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 

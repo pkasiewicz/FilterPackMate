@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayResponseDto;
-import pl.pkasiewicz.filterpackmate.domain.tray.excteption.TrayNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayNotFoundException;
 
 import java.util.List;
 import java.util.Optional;

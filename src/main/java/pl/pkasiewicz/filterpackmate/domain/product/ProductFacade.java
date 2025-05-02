@@ -3,7 +3,7 @@ package pl.pkasiewicz.filterpackmate.domain.product;
 import lombok.AllArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
-import pl.pkasiewicz.filterpackmate.domain.product.exception.ProductNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
 
 import java.util.List;
 
