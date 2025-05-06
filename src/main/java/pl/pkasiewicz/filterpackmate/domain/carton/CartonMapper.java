@@ -2,6 +2,10 @@ package pl.pkasiewicz.filterpackmate.domain.carton;
 
 import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.product.ProductMapper;
+
+import java.util.List;
+import java.util.Optional;
 
 class CartonMapper {
 
@@ -11,11 +15,17 @@ class CartonMapper {
                 .build();
     }
 
-    static CartonResponseDto mapToDto(Carton carton) {
+    static CartonResponseDto mapToDto(Carton entity) {
         return CartonResponseDto.builder()
-                .id(carton.getId())
-                .name(carton.getName())
-                .products(carton.getProducts())
+                .id(entity.getId())
+                .name(entity.getName())
+                .products(
+                        Optional.ofNullable(entity.getProducts())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(ProductMapper::mapToProductSummaryDto)
+                                .toList()
+                )
                 .build();
     }
 }
