@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record DividerRequestDto(
-        String name
+        String name,
+        int quantityPerPallet
 ) {
 }
