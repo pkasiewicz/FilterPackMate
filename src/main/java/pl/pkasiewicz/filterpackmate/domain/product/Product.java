@@ -10,6 +10,7 @@ import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,14 +22,15 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
+    private String name;
     @ManyToOne
-    Carton carton;
+    private Carton carton;
     @ManyToOne
-    Tray tray;
-    Pallet pallet;
+    private Tray tray;
+    private Pallet pallet;
     @ManyToMany
-    List<Divider> dividers;
+    private List<Divider> dividers = new ArrayList<>();
     @ManyToMany
-    List<Side> sides;
+    private List<Side> sides = new ArrayList<>();
 }
