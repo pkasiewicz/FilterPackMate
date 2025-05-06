@@ -1,7 +1,11 @@
 package pl.pkasiewicz.filterpackmate.domain.tray;
 
+import pl.pkasiewicz.filterpackmate.domain.product.ProductMapper;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayResponseDto;
+
+import java.util.List;
+import java.util.Optional;
 
 class TrayMapper {
 
@@ -15,7 +19,13 @@ class TrayMapper {
         return TrayResponseDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .products(entity.getProducts())
+                .products(
+                        Optional.ofNullable(entity.getProducts())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(ProductMapper::mapToProductSummaryDto)
+                                .toList()
+                )
                 .build();
     }
 }
