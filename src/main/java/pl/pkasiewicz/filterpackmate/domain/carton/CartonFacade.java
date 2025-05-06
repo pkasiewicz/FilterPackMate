@@ -30,4 +30,9 @@ public class CartonFacade {
                 .map(CartonMapper::mapToDto)
                 .orElseThrow(() -> new CartonNotFoundException("carton not found"));
     }
+
+    public Carton getCartonEntityById(Long id) {
+        return cartonRepository.findById(id)
+                .orElseThrow(() -> new CartonNotFoundException("carton not found"));
+    }
 }

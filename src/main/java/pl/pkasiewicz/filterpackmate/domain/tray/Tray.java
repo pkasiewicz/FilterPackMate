@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.product.Product;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSummaryDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,9 @@ public class Tray {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
+    private Long id;
+    private String name;
+    private int filtersPerTray;
     @OneToMany(mappedBy = "tray")
-    List<Product> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 }

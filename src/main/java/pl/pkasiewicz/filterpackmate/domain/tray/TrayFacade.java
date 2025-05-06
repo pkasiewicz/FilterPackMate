@@ -29,4 +29,9 @@ public class TrayFacade {
                 .map(TrayMapper::mapToDto)
                 .toList();
     }
+
+    public Tray getTrayEntityById(Long id) {
+        return trayRepository.findById(id)
+                .orElseThrow(() -> new TrayNotFoundException("tray not found"));
+    }
 }

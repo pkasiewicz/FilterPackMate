@@ -11,6 +11,7 @@ import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ class TrayFacadeTest {
     void should_save_tray() {
         // given
         TrayRequestDto trayRequestDto = new TrayRequestDto("DE165");
-        Tray returnedFromDb = new Tray(1L, "DE165", null);
+        Tray returnedFromDb = new Tray(1L, "DE165", 1, new ArrayList<>());
 
         when(trayRepository.save(any(Tray.class))).thenReturn(returnedFromDb);
 
@@ -54,9 +55,9 @@ class TrayFacadeTest {
     void should_return_all_trays() {
         // given
         List<Tray> trays = List.of(
-                new Tray(1L, "DE165", null),
-                new Tray(2L, "DE152", null),
-                new Tray(3L, "DE178", null)
+                new Tray(1L, "DE165", 1, new ArrayList<>()),
+                new Tray(2L, "DE152", 1,  new ArrayList<>()),
+                new Tray(3L, "DE178", 1,  new ArrayList<>())
         );
 
         // when
@@ -73,7 +74,7 @@ class TrayFacadeTest {
     void should_return_tray_by_id() {
         // given
         Long id = 1L;
-        Tray tray = new Tray(1L, "DE165", null);
+        Tray tray = new Tray(1L, "DE165", 1,  new ArrayList<>());
         when(trayRepository.findById(id)).thenReturn(Optional.of(tray));
         TrayResponseDto trayResponseDto = TrayMapper.mapToDto(tray);
 
@@ -110,8 +111,8 @@ class TrayFacadeTest {
     @Test
     void should_return_correct_tray_response_for_each_id() {
         // given
-        Tray tray1 = new Tray(1L, "DE165", null);
-        Tray tray2 = new Tray(2L, "DE152", null);
+        Tray tray1 = new Tray(1L, "DE165", 1,  new ArrayList<>());
+        Tray tray2 = new Tray(2L, "DE152", 1,  new ArrayList<>());
 
         when(trayRepository.findById(1L)).thenReturn(Optional.of(tray1));
         when(trayRepository.findById(2L)).thenReturn(Optional.of(tray2));

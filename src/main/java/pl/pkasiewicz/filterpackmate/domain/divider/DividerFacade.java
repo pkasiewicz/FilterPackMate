@@ -15,19 +15,24 @@ public class DividerFacade {
 
     public DividerResponseDto saveDivider(DividerRequestDto dividerRequestDto) {
         Divider savedDivider = dividerRepository.save(DividerMapper.mapToEntity(dividerRequestDto));
-        return DividerMapper.mapToDto(savedDivider);
+        return DividerMapper.mapToDividerResponseDto(savedDivider);
     }
 
     public List<DividerResponseDto> getAllDividers() {
         return dividerRepository.findAll()
                 .stream()
-                .map(DividerMapper::mapToDto)
+                .map(DividerMapper::mapToDividerResponseDto)
                 .collect(Collectors.toList());
     }
 
     public DividerResponseDto getDividerById(Long id) {
         return dividerRepository.findById(id)
-                .map(DividerMapper::mapToDto)
+                .map(DividerMapper::mapToDividerResponseDto)
+                .orElseThrow(() -> new DividerNotFoundException("divider not found"));
+    }
+
+    public Divider getDividerEntityById(Long id) {
+        return dividerRepository.findById(id)
                 .orElseThrow(() -> new DividerNotFoundException("divider not found"));
     }
 }

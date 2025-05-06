@@ -1,28 +1,44 @@
 package pl.pkasiewicz.filterpackmate.domain.product;
 
-import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
+import pl.pkasiewicz.filterpackmate.domain.divider.DividerMapper;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSummaryDto;
+import pl.pkasiewicz.filterpackmate.domain.side.SideMapper;
 
-class ProductMapper {
+import java.util.List;
+import java.util.Optional;
 
-    static Product mapToEntity(ProductRequestDto dto) {
-        return Product.builder()
-                .carton(dto.carton())
-                .tray(dto.tray())
-                .pallet(dto.pallet())
-                .dividers(dto.dividers())
-                .sides(dto.sides())
-                .build();
-    }
+public class ProductMapper {
 
     static ProductResponseDto mapToDto(Product entity) {
         return ProductResponseDto.builder()
                 .id(entity.getId())
-                .carton(entity.getCarton())
-                .tray(entity.getTray())
+                .name(entity.getName())
+                .cartonId(entity.getCarton().getId())
+                .cartonName(entity.getCarton().getName())
+                .trayId(entity.getTray().getId())
+                .trayName(entity.getTray().getName())
                 .pallet(entity.getPallet())
-                .dividers(entity.getDividers())
-                .sides(entity.getSides())
+                .dividers(
+                        Optional.ofNullable(entity.getDividers())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(DividerMapper::mapToDividerDto)
+                                .toList()
+                )
+                .sides(
+                        Optional.ofNullable(entity.getSides())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(SideMapper::mapToSideDto)
+                                .toList())
+                .build();
+    }
+
+    public static ProductSummaryDto mapToProductSummaryDto(Product entity) {
+        return ProductSummaryDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 }

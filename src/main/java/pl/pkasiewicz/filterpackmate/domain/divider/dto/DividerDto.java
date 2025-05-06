@@ -3,7 +3,8 @@ package pl.pkasiewicz.filterpackmate.domain.divider.dto;
 import lombok.Builder;
 
 @Builder
-public record DividerRequestDto(
+public record DividerDto(
+        Long id,
         String name,
         int quantityPerPallet
 ) {

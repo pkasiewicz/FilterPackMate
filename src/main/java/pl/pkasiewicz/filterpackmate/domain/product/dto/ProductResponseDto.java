@@ -1,21 +1,22 @@
 package pl.pkasiewicz.filterpackmate.domain.product.dto;
 
 import lombok.Builder;
-import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
-import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
+import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerDto;
 import pl.pkasiewicz.filterpackmate.domain.product.Pallet;
-import pl.pkasiewicz.filterpackmate.domain.side.Side;
-import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
+import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 
 import java.util.List;
 
 @Builder
 public record ProductResponseDto (
         Long id,
-        Carton carton,
-        Tray tray,
+        String name,
+        Long cartonId,
+        String cartonName,
+        Long trayId,
+        String trayName,
         Pallet pallet,
-        List<Divider> dividers,
-        List<Side> sides
+        List<DividerDto> dividers,
+        List<SideDto> sides
 ) {
 }

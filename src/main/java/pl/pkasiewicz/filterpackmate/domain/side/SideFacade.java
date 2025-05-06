@@ -15,19 +15,24 @@ public class SideFacade {
 
     public SideResponseDto saveSide(SideRequestDto sideRequestDto) {
         Side savedSide = sideRepository.save(SideMapper.mapToEntity(sideRequestDto));
-        return SideMapper.mapToDto(savedSide);
+        return SideMapper.mapSideResponseDto(savedSide);
     }
 
     public List<SideResponseDto> getAllSides() {
         return sideRepository.findAll()
                 .stream()
-                .map(SideMapper::mapToDto)
+                .map(SideMapper::mapSideResponseDto)
                 .collect(Collectors.toList());
     }
 
     public SideResponseDto getSideById(Long id) {
         return sideRepository.findById(id)
-                .map(SideMapper::mapToDto)
+                .map(SideMapper::mapSideResponseDto)
+                .orElseThrow(() -> new SideNotFoundException("side not found"));
+    }
+
+    public Side getSideEntityById(Long id) {
+        return sideRepository.findById(id)
                 .orElseThrow(() -> new SideNotFoundException("side not found"));
     }
 }
