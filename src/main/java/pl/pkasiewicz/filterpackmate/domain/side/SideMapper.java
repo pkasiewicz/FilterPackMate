@@ -1,21 +1,39 @@
 package pl.pkasiewicz.filterpackmate.domain.side;
 
+import pl.pkasiewicz.filterpackmate.domain.product.ProductMapper;
+import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
 
-class SideMapper {
+import java.util.List;
+import java.util.Optional;
 
-    public static SideResponseDto mapToDto(Side side) {
+public class SideMapper {
+
+    public static SideResponseDto mapSideResponseDto(Side entity) {
         return SideResponseDto.builder()
-                .id(side.getId())
-                .name(side.getName())
-                .products(side.getProducts())
+                .id(entity.getId())
+                .name(entity.getName())
+                .products(
+                        Optional.ofNullable(entity.getProducts())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(ProductMapper::mapToProductSummaryDto)
+                                .toList()
+                )
                 .build();
     }
 
-    public static Side mapToEntity(SideRequestDto sideRequestDto) {
+    public static Side mapToEntity(SideRequestDto dto) {
         return Side.builder()
-                .name(sideRequestDto.name())
+                .name(dto.name())
+                .build();
+    }
+
+    public static SideDto mapToSideDto(Side entity) {
+        return SideDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 }
