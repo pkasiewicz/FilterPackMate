@@ -11,6 +11,7 @@ import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.exceptions.DividerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +33,8 @@ class DividerFacadeTest {
     @Test
     void should_save_divider() {
         // given
-        DividerRequestDto dividerRequestDto = new DividerRequestDto("EA");
-        Divider returnedFromDb = new Divider(1L, "EA", null);
+        DividerRequestDto dividerRequestDto = new DividerRequestDto("EA", 100);
+        Divider returnedFromDb = new Divider(1L, "EA", 100, new ArrayList<>());
         when(dividerRepository.save(any(Divider.class))).thenReturn(returnedFromDb);
 
         // when
@@ -52,9 +53,9 @@ class DividerFacadeTest {
     void should_return_all_dividers() {
         // given
         List<Divider> dividers = List.of(
-                new Divider(1L, "EA", null),
-                new Divider(2L, "E-1", null),
-                new Divider(3L, "EW", null)
+                new Divider(1L, "EA", 100, new ArrayList<>()),
+                new Divider(2L, "E-1", 200, new ArrayList<>()),
+                new Divider(3L, "EW", 300, new ArrayList<>())
         );
         when(dividerRepository.findAll()).thenReturn(dividers);
 
@@ -73,9 +74,9 @@ class DividerFacadeTest {
     void should_return_divider_by_id() {
         // given
         Long id = 1L;
-        Divider divider = new Divider(1L, "EA", null);
+        Divider divider = new Divider(1L, "EA", 100, new ArrayList<>());
         when(dividerRepository.findById(id)).thenReturn(Optional.of(divider));
-        DividerResponseDto dividerResponseDto = DividerMapper.mapToDto(divider);
+        DividerResponseDto dividerResponseDto = DividerMapper.mapToDividerResponseDto(divider);
 
         // when
         DividerResponseDto responseDto = dividerFacade.getDividerById(id);
@@ -99,7 +100,7 @@ class DividerFacadeTest {
     @Test
     void should_throw_exception_when_divider_with_given_name_already_exist() {
         // given
-        DividerRequestDto dividerRequestDto = new DividerRequestDto("EA");
+        DividerRequestDto dividerRequestDto = new DividerRequestDto("EA", 100);
         when(dividerRepository.save(any(Divider.class)))
                 .thenThrow(new DuplicateKeyException("divider already exists"));
 
@@ -111,8 +112,8 @@ class DividerFacadeTest {
     @Test
     void should_return_correct_divider_response_for_each_id() {
         // given
-        Divider divider1 = new Divider(1L, "EA", null);
-        Divider divider2 = new Divider(2L, "E-1", null);
+        Divider divider1 = new Divider(1L, "EA", 100, new ArrayList<>());
+        Divider divider2 = new Divider(2L, "E-1", 200, new ArrayList<>());
         when(dividerRepository.findById(1L)).thenReturn(Optional.of(divider1));
         when(dividerRepository.findById(2L)).thenReturn(Optional.of(divider2));
 

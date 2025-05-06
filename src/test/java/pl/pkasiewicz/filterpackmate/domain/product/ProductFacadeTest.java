@@ -8,19 +8,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
+import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
+import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
+import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
+import pl.pkasiewicz.filterpackmate.domain.tray.TrayFacade;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +35,14 @@ class ProductFacadeTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private CartonFacade cartonFacade;
+    @Mock
+    private TrayFacade trayFacade;
+    @Mock
+    private DividerFacade dividerFacade;
+    @Mock
+    private SideFacade sideFacade;
     @InjectMocks
     private ProductFacade productFacade;
 
@@ -36,43 +50,48 @@ class ProductFacadeTest {
     void should_save_product() {
         // given
         ProductRequestDto productRequestDto = new ProductRequestDto(
-                new Carton(1L, "PCA-12", null),
-                new Tray(1L, "DE165", null),
+                "A1",
+                1L,
+                1L,
                 Pallet.EURO,
-                List.of(
-                        new Divider(1L, "E-1", null)
-                ),
-                List.of(
-                        new Side(1L, "BE900B", null)
-                )
+                List.of(1L),
+                List.of(1L)
         );
+
         Product returnedFromDb = new Product(
                 1L,
-                new Carton(1L, "PCA-12", null),
-                new Tray(1L, "DE165", null),
+                "A1",
+                new Carton(1L, "PCA-12", 1, new ArrayList<>()),
+                new Tray(1L, "DE165", 1, new ArrayList<>()),
                 Pallet.EURO,
                 List.of(
-                        new Divider(1L, "E-1", null)
+                        new Divider(1L, "E-1", 100, new ArrayList<>())
                 ),
                 List.of(
-                        new Side(1L, "BE900B", null)
+                        new Side(1L, "BE900B", new ArrayList<>())
                 )
         );
+
+        when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(new Carton(1L, "PCA-12", 1, new ArrayList<>()));
+        when(trayFacade.getTrayEntityById(anyLong())).thenReturn(new Tray(1L, "DE165", 1, new ArrayList<>()));
+        when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(new Divider(1L, "E-1", 100, new ArrayList<>()));
+        when(sideFacade.getSideEntityById(anyLong())).thenReturn(new Side(1L, "BE900B", new ArrayList<>()));
 
         when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
 
         // when
         ProductResponseDto response = productFacade.saveProduct(productRequestDto);
 
+
         // then
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository).save(captor.capture());
         Product savedProduct = captor.getValue();
 
-        assertThat(savedProduct.carton).isEqualTo(returnedFromDb.carton);
-        assertThat(savedProduct.tray).isEqualTo(returnedFromDb.tray);
-        assertThat(savedProduct.pallet).isEqualTo(returnedFromDb.pallet);
-        assertThat(response.id()).isEqualTo(returnedFromDb.id);
+        assertThat(savedProduct.getCarton().getId()).isEqualTo(returnedFromDb.getCarton().getId());
+        assertThat(savedProduct.getTray().getId()).isEqualTo(returnedFromDb.getTray().getId());
+        assertThat(savedProduct.getPallet()).isEqualTo(returnedFromDb.getPallet());
+        assertThat(response.id()).isEqualTo(returnedFromDb.getId());
     }
 
 
@@ -80,9 +99,33 @@ class ProductFacadeTest {
     void should_return_all_products() {
         // given
         List<Product> products = List.of(
-                new Product(1L, new Carton(1L, "PCA-1", null), new Tray(1L, "DE165", null), Pallet.EURO, null, null),
-                new Product(2L, new Carton(2L, "PCA-2", null), new Tray(2L, "DE152", null), Pallet.GM6, null, null),
-                new Product(3L, new Carton(3L, "PCA-3", null), new Tray(3L, "DE178", null), Pallet.HG5, null, null)
+                new Product(
+                        1L,
+                        "A1",
+                        new Carton(1L, "PCA-1", 100, new ArrayList<>()),
+                        new Tray(1L, "DE165", 10, new ArrayList<>()),
+                        Pallet.EURO,
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                ),
+                new Product(
+                        2L,
+                        "A2",
+                        new Carton(2L, "PCA-2", 100, new ArrayList<>()),
+                        new Tray(2L, "DE152", 10, new ArrayList<>()),
+                        Pallet.GM6,
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                ),
+                new Product(
+                        3L,
+                        "A3",
+                        new Carton(3L, "PCA-3", 100, new ArrayList<>()),
+                        new Tray(3L, "DE178", 10, new ArrayList<>()),
+                        Pallet.HG5,
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                )
         );
 
         when(productRepository.findAll()).thenReturn(products);
@@ -93,8 +136,7 @@ class ProductFacadeTest {
         // then
         verify(productRepository).findAll();
         assertThat(response).hasSize(3);
-        assertThat(response).extracting(ProductResponseDto::carton)
-                .extracting(Carton::getName)
+        assertThat(response).extracting(ProductResponseDto::cartonName)
                 .containsExactly("PCA-1", "PCA-2", "PCA-3");
     }
 
@@ -104,14 +146,15 @@ class ProductFacadeTest {
         Long id = 1L;
         Product product = new Product(
                 1L,
-                new Carton(1L, "PCA-12", null),
-                new Tray(1L, "DE165", null),
+                "A1",
+                new Carton(1L, "PCA-12", 1, new ArrayList<>()),
+                new Tray(1L, "DE165", 1, new ArrayList<>()),
                 Pallet.EURO,
                 List.of(
-                        new Divider(1L, "E-1", null)
+                        new Divider(1L, "E-1", 100, new ArrayList<>())
                 ),
                 List.of(
-                        new Side(1L, "BE900B", null)
+                        new Side(1L, "BE900B", new ArrayList<>())
                 )
         );
 
@@ -151,15 +194,12 @@ class ProductFacadeTest {
     void should_throw_exception_when_product_with_given_name_already_exist() {
         // given
         ProductRequestDto productRequestDto = new ProductRequestDto(
-                new Carton(1L, "PCA-12", null),
-                new Tray(1L, "DE165", null),
+                "A1",
+                1L,
+                1L,
                 Pallet.EURO,
-                List.of(
-                        new Divider(1L, "E-1", null)
-                ),
-                List.of(
-                        new Side(1L, "BE900B", null)
-                )
+                List.of(1L),
+                List.of(1L)
         );
 
         when(productRepository.save(any(Product.class))).thenThrow(new DuplicateKeyException("product already exists"));

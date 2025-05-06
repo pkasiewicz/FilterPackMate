@@ -11,6 +11,7 @@ import pl.pkasiewicz.filterpackmate.domain.side.dto.SideRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.side.exceptions.SideNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ class SideFacadeTest {
     void should_save_side() {
         // given
         SideRequestDto sideRequestDto = new SideRequestDto("BJ900A");
-        Side returnedFromDb = new Side(1L, "BJ900A", null);
+        Side returnedFromDb = new Side(1L, "BJ900A", new ArrayList<>());
         when(sideRepository.save(any(Side.class))).thenReturn(returnedFromDb);
 
         // when
@@ -52,9 +53,9 @@ class SideFacadeTest {
     void should_return_all_sides() {
         // given
         List<Side> sides = List.of(
-                new Side(1L, "BJ900A", null),
-                new Side(2L, "BE900B", null),
-                new Side(3L, "BE770A", null)
+                new Side(1L, "BJ900A", new ArrayList<>()),
+                new Side(2L, "BE900B", new ArrayList<>()),
+                new Side(3L, "BE770A", new ArrayList<>())
         );
         when(sideRepository.findAll()).thenReturn(sides);
 
@@ -73,9 +74,9 @@ class SideFacadeTest {
     void should_return_side_by_id() {
         // given
         Long id = 1L;
-        Side side = new Side(1L, "BJ900A", null);
+        Side side = new Side(1L, "BJ900A", new ArrayList<>());
         when(sideRepository.findById(id)).thenReturn(Optional.of(side));
-        SideResponseDto sideResponseDto = SideMapper.mapToDto(side);
+        SideResponseDto sideResponseDto = SideMapper.mapSideResponseDto(side);
 
         // when
         SideResponseDto responseDto = sideFacade.getSideById(id);
@@ -110,8 +111,8 @@ class SideFacadeTest {
     @Test
     void should_return_correct_side_response_for_each_id() {
         // given
-        Side side1 = new Side(1L, "BJ900A", null);
-        Side side2 = new Side(2L, "BE900B", null);
+        Side side1 = new Side(1L, "BJ900A", new ArrayList<>());
+        Side side2 = new Side(2L, "BE900B", new ArrayList<>());
         when(sideRepository.findById(1L)).thenReturn(Optional.of(side1));
         when(sideRepository.findById(2L)).thenReturn(Optional.of(side2));
 
