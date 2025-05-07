@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="005-1" author="pkasiewicz">
+        <createTable tableName="product">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(10)">
+                <constraints unique="true"/>
+            </column>
+            <column name="carton_id" type="BIGINT"/>
+            <column name="tray_id" type="BIGINT"/>
+            <column name="pallet" type="VARCHAR(10)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="product"
+                                 baseColumnNames="carton_id"
+                                 referencedTableName="carton"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_product_carton"/>
+        <addForeignKeyConstraint baseTableName="product"
+                                 baseColumnNames="tray_id"
+                                 referencedTableName="tray"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_product_tray"/>
+    </changeSet>
+
+</databaseChangeLog>
