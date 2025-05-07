@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="003-1" author="pkasiewicz">
+        <createTable tableName="divider">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(10)">
+                <constraints unique="true"/>
+            </column>
+            <column name="quantity_per_pallet" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003-2" author="pkasiewicz">
+        <createTable tableName="divider_product">
+            <column name="dividers_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="divider_product" columnNames="dividers_id,product_id"/>
+        <addForeignKeyConstraint baseTableName="divider_product"
+                                 baseColumnNames="dividers_id"
+                                 referencedTableName="divider"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_divider_product_divider"/>
+        <addForeignKeyConstraint baseTableName="divider_product"
+                                 baseColumnNames="product_id"
+                                 referencedTableName="product"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_divider_product_product"/>
+    </changeSet>
+</databaseChangeLog>
