@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
+import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
@@ -26,11 +27,15 @@ public class Product {
     private String name;
     @ManyToOne
     private Carton carton;
+    private int filtersPerCarton;
     @ManyToOne
     private Tray tray;
     private Pallet pallet;
+    private int filtersPerPallet;
+    private int cartonsPerPallet;
     @ManyToMany
     private List<Divider> dividers = new ArrayList<>();
     @ManyToMany
     private List<Side> sides = new ArrayList<>();
+    private Corner corner;
 }

@@ -17,6 +17,7 @@ public record ProductResponseDto (
         String trayName,
         Pallet pallet,
         List<DividerDto> dividers,
-        List<SideDto> sides
+        List<SideDto> sides,
+        Long cornerId
 ) {
 }

@@ -3,6 +3,7 @@ package pl.pkasiewicz.filterpackmate.domain.product;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
 import pl.pkasiewicz.filterpackmate.domain.tray.TrayFacade;
@@ -15,7 +16,8 @@ class ProductFacadeConfiguration {
                                 CartonFacade cartonFacade,
                                 TrayFacade trayFacade,
                                 DividerFacade dividerFacade,
-                                SideFacade sideFacade) {
-        return new ProductFacade(productRepository, cartonFacade, trayFacade, dividerFacade, sideFacade);
+                                SideFacade sideFacade,
+                                CornerFacade cornerFacade) {
+        return new ProductFacade(productRepository, cartonFacade, trayFacade, dividerFacade, sideFacade, cornerFacade);
     }
 }
