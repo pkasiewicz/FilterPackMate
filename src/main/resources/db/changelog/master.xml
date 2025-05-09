@@ -11,6 +11,7 @@
     <include file="004_create_table_side.xml" relativeToChangelogFile="true"/>
     <include file="005_create_table_product.xml" relativeToChangelogFile="true"/>
     <include file="006_create_table_user.xml" relativeToChangelogFile="true"/>
+    <include file="007_create_table_corner.xml" relativeToChangelogFile="true"/>
 
     <!-- TEST DATA -->
     <include file="../data/001_cartons.sql" relativeToChangelogFile="true"/>
@@ -19,5 +20,6 @@
     <include file="../data/004_sides.sql" relativeToChangelogFile="true"/>
     <include file="../data/005_products.sql" relativeToChangelogFile="true"/>
     <include file="../data/006_users.sql" relativeToChangelogFile="true"/>
+    <include file="../data/007_corners.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

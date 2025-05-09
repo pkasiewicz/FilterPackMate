@@ -76,7 +76,7 @@ class SideFacadeTest {
         Long id = 1L;
         Side side = new Side(1L, "BJ900A", new ArrayList<>());
         when(sideRepository.findById(id)).thenReturn(Optional.of(side));
-        SideResponseDto sideResponseDto = SideMapper.mapSideResponseDto(side);
+        SideResponseDto sideResponseDto = SideMapper.mapToSideResponseDto(side);
 
         // when
         SideResponseDto responseDto = sideFacade.getSideById(id);

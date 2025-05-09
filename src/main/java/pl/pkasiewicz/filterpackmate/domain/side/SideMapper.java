@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class SideMapper {
 
-    public static SideResponseDto mapSideResponseDto(Side entity) {
+    public static SideResponseDto mapToSideResponseDto(Side entity) {
         return SideResponseDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
