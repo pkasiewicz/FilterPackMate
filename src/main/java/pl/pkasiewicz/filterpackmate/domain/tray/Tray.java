@@ -22,7 +22,6 @@ public class Tray {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int filtersPerTray;
     @OneToMany(mappedBy = "tray")
     private List<Product> products = new ArrayList<>();
 }

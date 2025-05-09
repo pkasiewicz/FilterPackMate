@@ -21,7 +21,6 @@ public class Carton {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int filtersPerCarton;
     @OneToMany(mappedBy = "carton")
     private List<Product> products = new ArrayList<>();
 }
