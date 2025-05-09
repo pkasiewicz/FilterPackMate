@@ -14,8 +14,13 @@
                 <constraints unique="true"/>
             </column>
             <column name="carton_id" type="BIGINT"/>
+            <column name="filters_per_carton" type="INT"/>
             <column name="tray_id" type="BIGINT"/>
             <column name="pallet" type="VARCHAR(10)"/>
+            <column name="filters_per_pallet" type="INT"/>
+            <column name="cartons_per_pallet" type="INT"/>
+            <column name="corner_id" type="BIGINT"/>
+
         </createTable>
         <addForeignKeyConstraint baseTableName="product"
                                  baseColumnNames="carton_id"
@@ -27,6 +32,11 @@
                                  referencedTableName="tray"
                                  referencedColumnNames="id"
                                  constraintName="fk_product_tray"/>
+        <addForeignKeyConstraint baseTableName="product"
+                                 baseColumnNames="corner_id"
+                                 referencedTableName="corner"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_product_corner"/>
     </changeSet>
 
 </databaseChangeLog>
