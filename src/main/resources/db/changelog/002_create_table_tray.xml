@@ -13,7 +13,6 @@
             <column name="name" type="VARCHAR(10)">
                 <constraints unique="true"/>
             </column>
-            <column name="filters_per_tray" type="INT"/>
         </createTable>
     </changeSet>
 
