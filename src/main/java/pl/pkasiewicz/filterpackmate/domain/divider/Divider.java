@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.product.Product;
-import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSummaryDto;
 
 import java.util.ArrayList;
 import java.util.List;
