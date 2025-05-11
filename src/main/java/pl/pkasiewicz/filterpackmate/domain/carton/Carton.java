@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "cartons")
 public class Carton {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

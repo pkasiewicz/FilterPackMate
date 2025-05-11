@@ -16,8 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "dividers")
 public class Divider {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

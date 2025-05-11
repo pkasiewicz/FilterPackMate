@@ -15,13 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "corners")
 public class Corner {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "corners")
+    @OneToMany(mappedBy = "corner")
     private List<Product> products = new ArrayList<>();
 }
 

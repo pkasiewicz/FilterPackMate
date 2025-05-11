@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.product.Product;
-import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSummaryDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "trays")
 public class Tray {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

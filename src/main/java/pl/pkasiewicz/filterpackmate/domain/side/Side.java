@@ -16,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "sides")
 public class Side {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
