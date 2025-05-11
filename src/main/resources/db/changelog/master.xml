@@ -3,23 +3,42 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <include file="001_create_table_carton.xml" relativeToChangelogFile="true"/>
     <include file="002_create_table_tray.xml" relativeToChangelogFile="true"/>
     <include file="003_create_table_divider.xml" relativeToChangelogFile="true"/>
     <include file="004_create_table_side.xml" relativeToChangelogFile="true"/>
-    <include file="005_create_table_product.xml" relativeToChangelogFile="true"/>
-    <include file="006_create_table_user.xml" relativeToChangelogFile="true"/>
     <include file="007_create_table_corner.xml" relativeToChangelogFile="true"/>
+    <include file="006_create_table_user.xml" relativeToChangelogFile="true"/>
+    <include file="005_create_table_product.xml" relativeToChangelogFile="true"/>
 
-    <!-- TEST DATA -->
-    <include file="../data/001_cartons.sql" relativeToChangelogFile="true"/>
-    <include file="../data/002_trays.sql" relativeToChangelogFile="true"/>
-    <include file="../data/003_dividers.sql" relativeToChangelogFile="true"/>
-    <include file="../data/004_sides.sql" relativeToChangelogFile="true"/>
-    <include file="../data/005_products.sql" relativeToChangelogFile="true"/>
-    <include file="../data/006_users.sql" relativeToChangelogFile="true"/>
-    <include file="../data/007_corners.sql" relativeToChangelogFile="true"/>
+    <changeSet id="data-001" author="pkasiewicz">
+        <sqlFile path="../data/001_cartons.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-002" author="pkasiewicz">
+        <sqlFile path="../data/002_trays.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-003" author="pkasiewicz">
+        <sqlFile path="../data/003_dividers.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-004" author="pkasiewicz">
+        <sqlFile path="../data/004_sides.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-005" author="pkasiewicz">
+        <sqlFile path="../data/007_corners.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-006" author="pkasiewicz">
+        <sqlFile path="../data/005_products.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-007" author="pkasiewicz">
+        <sqlFile path="../data/006_users.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-008" author="pkasiewicz">
+        <sqlFile path="../data/008_product_divider.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="data-009" author="pkasiewicz">
+        <sqlFile path="../data/009_product_side.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
 </databaseChangeLog>

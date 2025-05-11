@@ -3,15 +3,15 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <changeSet id="002-1" author="pkasiewicz">
-        <createTable tableName="tray">
+        <createTable tableName="trays">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(10)">
-                <constraints unique="true"/>
+                <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
