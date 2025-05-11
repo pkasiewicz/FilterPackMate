@@ -34,7 +34,7 @@ class CartonFacadeTest {
     void should_save_carton() {
         // given
         CartonRequestDto cartonRequestDto = new CartonRequestDto("PCA-12");
-        Carton returnedFromDb = new Carton(1L, "PCA-12", 1, new ArrayList<>());
+        Carton returnedFromDb = new Carton(1L, "PCA-12", new ArrayList<>());
         when(cartonRepository.save(any(Carton.class))).thenReturn(returnedFromDb);
 
         // when
@@ -53,9 +53,9 @@ class CartonFacadeTest {
     void should_return_all_cartons() {
         // given
         List<Carton> cartons = List.of(
-                new Carton(1L, "PCA-12", 1, new ArrayList<>()),
-                new Carton(2L, "PCA-13", 1, new ArrayList<>()),
-                new Carton(3L, "PCA-14", 1, new ArrayList<>())
+                new Carton(1L, "PCA-12", new ArrayList<>()),
+                new Carton(2L, "PCA-13", new ArrayList<>()),
+                new Carton(3L, "PCA-14", new ArrayList<>())
         );
         when(cartonRepository.findAll()).thenReturn(cartons);
 
@@ -74,7 +74,7 @@ class CartonFacadeTest {
     void should_return_carton_by_id() {
         // given
         Long id = 1L;
-        Carton carton = new Carton(1L, "PCA-12", 1, new ArrayList<>());
+        Carton carton = new Carton(1L, "PCA-12", new ArrayList<>());
         when(cartonRepository.findById(id)).thenReturn(Optional.of(carton));
         CartonResponseDto cartonResponseDto = CartonMapper.mapToDto(carton);
 
@@ -112,8 +112,8 @@ class CartonFacadeTest {
     @Test
     void should_return_correct_carton_response_for_each_id() {
         // given
-        Carton carton1 = new Carton(1L, "PCA-12", 1, new ArrayList<>());
-        Carton carton2 = new Carton(2L, "PCA-13", 1, new ArrayList<>());
+        Carton carton1 = new Carton(1L, "PCA-12", new ArrayList<>());
+        Carton carton2 = new Carton(2L, "PCA-13", new ArrayList<>());
         when(cartonRepository.findById(1L)).thenReturn(Optional.of(carton1));
         when(cartonRepository.findById(2L)).thenReturn(Optional.of(carton2));
 

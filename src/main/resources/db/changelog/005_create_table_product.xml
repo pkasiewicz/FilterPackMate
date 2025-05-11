@@ -1,0 +1,65 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="005-1" author="pkasiewicz">
+        <createTable tableName="products">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(10)" />
+            <column name="carton_id" type="BIGINT"/>
+            <column name="filters_per_carton" type="INTEGER"/>
+            <column name="tray_id" type="BIGINT"/>
+            <column name="pallet" type="VARCHAR(10)" />
+            <column name="filters_per_pallet" type="INTEGER"/>
+            <column name="cartons_per_pallet" type="INTEGER"/>
+            <column name="corner_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="carton_id"
+                                 referencedTableName="cartons" referencedColumnNames="id"
+                                 constraintName="fk_product_carton"/>
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="tray_id"
+                                 referencedTableName="trays" referencedColumnNames="id"
+                                 constraintName="fk_product_tray"/>
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="corner_id"
+                                 referencedTableName="corners" referencedColumnNames="id"
+                                 constraintName="fk_product_corner"/>
+    </changeSet>
+
+    <changeSet id="005-2" author="pkasiewicz">
+        <createTable tableName="product_divider">
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="divider_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="product_divider" baseColumnNames="product_id"
+                                 referencedTableName="products" referencedColumnNames="id"
+                                 constraintName="fk_pd_product"/>
+        <addForeignKeyConstraint baseTableName="product_divider" baseColumnNames="divider_id"
+                                 referencedTableName="dividers" referencedColumnNames="id"
+                                 constraintName="fk_pd_divider"/>
+    </changeSet>
+
+    <changeSet id="005-3" author="pkasiewicz">
+        <createTable tableName="product_side">
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="side_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="product_side" baseColumnNames="product_id"
+                                 referencedTableName="products" referencedColumnNames="id"
+                                 constraintName="fk_ps_product"/>
+        <addForeignKeyConstraint baseTableName="product_side" baseColumnNames="side_id"
+                                 referencedTableName="sides" referencedColumnNames="id"
+                                 constraintName="fk_ps_side"/>
+    </changeSet>
+</databaseChangeLog>

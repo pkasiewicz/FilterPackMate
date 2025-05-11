@@ -9,6 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
+import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
@@ -43,6 +45,8 @@ class ProductFacadeTest {
     private DividerFacade dividerFacade;
     @Mock
     private SideFacade sideFacade;
+    @Mock
+    private CornerFacade cornerFacade;
     @InjectMocks
     private ProductFacade productFacade;
 
@@ -55,27 +59,33 @@ class ProductFacadeTest {
                 1L,
                 Pallet.EURO,
                 List.of(1L),
-                List.of(1L)
+                List.of(1L),
+                1L
         );
 
         Product returnedFromDb = new Product(
                 1L,
                 "A1",
-                new Carton(1L, "PCA-12", 1, new ArrayList<>()),
-                new Tray(1L, "DE165", 1, new ArrayList<>()),
+                new Carton(1L, "PCA-12", new ArrayList<>()),
+                1,
+                new Tray(1L, "DE165", new ArrayList<>()),
                 Pallet.EURO,
+                1,
+                1,
                 List.of(
                         new Divider(1L, "E-1", 100, new ArrayList<>())
                 ),
                 List.of(
                         new Side(1L, "BE900B", new ArrayList<>())
-                )
+                ),
+                new Corner(1L, "CP850", new ArrayList<>())
         );
 
-        when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(new Carton(1L, "PCA-12", 1, new ArrayList<>()));
-        when(trayFacade.getTrayEntityById(anyLong())).thenReturn(new Tray(1L, "DE165", 1, new ArrayList<>()));
+        when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(new Carton(1L, "PCA-12", new ArrayList<>()));
+        when(trayFacade.getTrayEntityById(anyLong())).thenReturn(new Tray(1L, "DE165", new ArrayList<>()));
         when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(new Divider(1L, "E-1", 100, new ArrayList<>()));
         when(sideFacade.getSideEntityById(anyLong())).thenReturn(new Side(1L, "BE900B", new ArrayList<>()));
+        when(cornerFacade.getCornerEntityById(anyLong())).thenReturn(new Corner(1L, "CP850", new ArrayList<>()));
 
         when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
 
@@ -102,29 +112,41 @@ class ProductFacadeTest {
                 new Product(
                         1L,
                         "A1",
-                        new Carton(1L, "PCA-1", 100, new ArrayList<>()),
-                        new Tray(1L, "DE165", 10, new ArrayList<>()),
+                        new Carton(1L, "PCA-1", new ArrayList<>()),
+                        1,
+                        new Tray(1L, "DE165", new ArrayList<>()),
                         Pallet.EURO,
+                        1,
+                        1,
                         new ArrayList<>(),
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                        new Corner(1L, "CP850", new ArrayList<>())
                 ),
                 new Product(
                         2L,
                         "A2",
-                        new Carton(2L, "PCA-2", 100, new ArrayList<>()),
-                        new Tray(2L, "DE152", 10, new ArrayList<>()),
+                        new Carton(2L, "PCA-2", new ArrayList<>()),
+                        2,
+                        new Tray(2L, "DE152", new ArrayList<>()),
                         Pallet.GM6,
+                        2,
+                        2,
                         new ArrayList<>(),
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                        new Corner(2L, "CP950", new ArrayList<>())
                 ),
                 new Product(
                         3L,
                         "A3",
-                        new Carton(3L, "PCA-3", 100, new ArrayList<>()),
-                        new Tray(3L, "DE178", 10, new ArrayList<>()),
+                        new Carton(3L, "PCA-3", new ArrayList<>()),
+                        3,
+                        new Tray(3L, "DE178", new ArrayList<>()),
                         Pallet.HG5,
+                        3,
+                        3,
                         new ArrayList<>(),
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                        new Corner(3L, "CP900", new ArrayList<>())
                 )
         );
 
@@ -146,16 +168,20 @@ class ProductFacadeTest {
         Long id = 1L;
         Product product = new Product(
                 1L,
-                "A1",
-                new Carton(1L, "PCA-12", 1, new ArrayList<>()),
-                new Tray(1L, "DE165", 1, new ArrayList<>()),
+                "BA27",
+                new Carton(1L, "PCA-12", new ArrayList<>()),
+                4,
+                new Tray(1L, "DE165", new ArrayList<>()),
                 Pallet.EURO,
+                20,
+                80,
                 List.of(
                         new Divider(1L, "E-1", 100, new ArrayList<>())
                 ),
                 List.of(
                         new Side(1L, "BE900B", new ArrayList<>())
-                )
+                ),
+                new Corner(1L, "CP850", new ArrayList<>())
         );
 
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
@@ -199,7 +225,8 @@ class ProductFacadeTest {
                 1L,
                 Pallet.EURO,
                 List.of(1L),
-                List.of(1L)
+                List.of(1L),
+                1L
         );
 
         when(productRepository.save(any(Product.class))).thenThrow(new DuplicateKeyException("product already exists"));

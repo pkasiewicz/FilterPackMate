@@ -3,6 +3,8 @@ package pl.pkasiewicz.filterpackmate.domain.product;
 import lombok.AllArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
+import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
@@ -23,6 +25,7 @@ public class ProductFacade {
     private final TrayFacade trayFacade;
     private final DividerFacade dividerFacade;
     private final SideFacade sideFacade;
+    private final CornerFacade cornerFacade;
 
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
         Product product = getProduct(dto);
@@ -47,6 +50,7 @@ public class ProductFacade {
         Tray tray = getTray(dto);
         List<Divider> dividers = getDividers(dto);
         List<Side> sides = getSides(dto);
+        Corner corner = getCorner(dto);
 
         return Product.builder()
                 .carton(carton)
@@ -54,6 +58,7 @@ public class ProductFacade {
                 .pallet(dto.pallet())
                 .dividers(dividers)
                 .sides(sides)
+                .corner(corner)
                 .build();
     }
 
@@ -77,5 +82,9 @@ public class ProductFacade {
                 .stream()
                 .map(sideFacade::getSideEntityById)
                 .toList();
+    }
+
+    private Corner getCorner(ProductRequestDto dto) {
+        return cornerFacade.getCornerEntityById(dto.cornerId());
     }
 }

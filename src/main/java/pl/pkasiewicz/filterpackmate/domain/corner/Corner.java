@@ -1,4 +1,4 @@
-package pl.pkasiewicz.filterpackmate.domain.side;
+package pl.pkasiewicz.filterpackmate.domain.corner;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,12 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "sides")
-public class Side {
+@Table(name = "corners")
+public class Corner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "sides")
+    @OneToMany(mappedBy = "corner")
     private List<Product> products = new ArrayList<>();
 }
+

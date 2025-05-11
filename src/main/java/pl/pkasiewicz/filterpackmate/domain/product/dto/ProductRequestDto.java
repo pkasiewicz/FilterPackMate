@@ -12,6 +12,7 @@ public record ProductRequestDto(
         Long trayId,
         Pallet pallet,
         List<Long> dividerIds,
-        List<Long> sideIds
+        List<Long> sideIds,
+        Long cornerId
 ) {
 }
