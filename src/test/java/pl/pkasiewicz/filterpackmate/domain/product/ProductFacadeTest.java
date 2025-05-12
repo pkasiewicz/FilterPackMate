@@ -55,6 +55,9 @@ class ProductFacadeTest {
         // given
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "A1",
+                1,
+                1,
+                1,
                 1L,
                 1L,
                 Pallet.EURO,
@@ -91,7 +94,6 @@ class ProductFacadeTest {
 
         // when
         ProductResponseDto response = productFacade.saveProduct(productRequestDto);
-
 
         // then
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
@@ -221,6 +223,9 @@ class ProductFacadeTest {
         // given
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "A1",
+                1,
+                1,
+                1,
                 1L,
                 1L,
                 Pallet.EURO,
