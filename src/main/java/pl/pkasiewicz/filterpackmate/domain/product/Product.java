@@ -35,8 +35,8 @@ public class Product {
     private Tray tray;
     @Enumerated(EnumType.STRING)
     private Pallet pallet;
-    private int filtersPerPallet;
     private int cartonsPerPallet;
+    private int filtersPerPallet;
     @ManyToMany
     @JoinTable(
             name = "product_divider",

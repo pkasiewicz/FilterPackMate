@@ -18,6 +18,7 @@ class ProductFacadeConfiguration {
                                 DividerFacade dividerFacade,
                                 SideFacade sideFacade,
                                 CornerFacade cornerFacade) {
-        return new ProductFacade(productRepository, cartonFacade, trayFacade, dividerFacade, sideFacade, cornerFacade);
+        ProductCalculationService productCalculationService = new ProductCalculationService();
+        return new ProductFacade(productRepository, cartonFacade, trayFacade, dividerFacade, sideFacade, cornerFacade, productCalculationService);
     }
 }
