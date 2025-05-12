@@ -7,6 +7,7 @@ import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
 import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductPackagingCalculationRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
@@ -26,6 +27,16 @@ public class ProductFacade {
     private final DividerFacade dividerFacade;
     private final SideFacade sideFacade;
     private final CornerFacade cornerFacade;
+    private final ProductCalculationService productCalculationService;
+
+    public List<PackagingCalculationDto> getProductsWithPackaging(List<ProductPackagingCalculationRequestDto> productDtos) {
+        return productDtos.stream()
+                .map(dto -> {
+                    Product product = productRepository.findById(dto.productId())
+                            .orElseThrow(() -> new ProductNotFoundException("product not found"));
+                    return productCalculationService.calculatePackingMaterials(product, dto.productQty());
+                }).toList();
+    }
 
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
         Product product = getProduct(dto);
@@ -53,9 +64,13 @@ public class ProductFacade {
         Corner corner = getCorner(dto);
 
         return Product.builder()
+                .name(dto.name())
                 .carton(carton)
+                .filtersPerCarton(dto.filtersPerCarton())
                 .tray(tray)
                 .pallet(dto.pallet())
+                .cartonsPerPallet(dto.cartonsPerPallet())
+                .filtersPerPallet(dto.filtersPerPallet())
                 .dividers(dividers)
                 .sides(sides)
                 .corner(corner)

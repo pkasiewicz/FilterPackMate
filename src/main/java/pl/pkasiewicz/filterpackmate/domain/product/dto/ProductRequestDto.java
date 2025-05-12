@@ -8,6 +8,9 @@ import java.util.List;
 @Builder
 public record ProductRequestDto(
         String name,
+        int filtersPerCarton,
+        int cartonsPerPallet,
+        int filtersPerPallet,
         Long cartonId,
         Long trayId,
         Pallet pallet,

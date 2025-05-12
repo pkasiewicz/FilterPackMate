@@ -18,6 +18,9 @@ public class ProductMapper {
                 .cartonName(entity.getCarton().getName())
                 .trayId(entity.getTray().getId())
                 .trayName(entity.getTray().getName())
+                .filtersPerCarton(entity.getFiltersPerCarton())
+                .cartonsPerPallet(entity.getCartonsPerPallet())
+                .filtersPerPallet(entity.getFiltersPerPallet())
                 .pallet(entity.getPallet())
                 .dividers(
                         Optional.ofNullable(entity.getDividers())
