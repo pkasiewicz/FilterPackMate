@@ -7,8 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
-import pl.pkasiewicz.filterpackmate.domain.user.dto.UserRequestDto;
-import pl.pkasiewicz.filterpackmate.domain.user.dto.UserResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.RegisterUserDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.UserDto;
 import pl.pkasiewicz.filterpackmate.domain.user.exceptions.UserNotFoundException;
 
 import java.util.Optional;
@@ -30,13 +31,13 @@ class UserFacadeTest {
     @Test
     void should_create_a_user() {
         // given
-        UserRequestDto requestDto = new UserRequestDto("user", "password");
+        RegisterUserDto requestDto = new RegisterUserDto("user", "password");
         User returnedFromDb = new User(1L, "user", "password");
 
         when(userRepository.save(any(User.class))).thenReturn(returnedFromDb);
 
         // when
-        UserResponseDto response = userFacade.registerUser(requestDto);
+        RegistrationResultDto response = userFacade.registerUser(requestDto);
 
         // then
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -54,10 +55,10 @@ class UserFacadeTest {
         String username = "user";
         User returnedUser = new User(1L, "user", "password");
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(returnedUser));
-        UserResponseDto expectedDto = UserMapper.mapToUserResponseDto(returnedUser);
+        UserDto expectedDto = UserMapper.mapToUserDto(returnedUser);
 
         // when
-        UserResponseDto responseDto = userFacade.findByUsername(username);
+        UserDto responseDto = userFacade.findByUsername(username);
 
         // then
         verify(userRepository).findByUsername(username);
@@ -79,7 +80,7 @@ class UserFacadeTest {
     @Test
     void should_throw_exception_if_username_already_exists() {
         // given
-        UserRequestDto requestDto = new UserRequestDto("user", "password");
+        RegisterUserDto requestDto = new RegisterUserDto("user", "password");
         when(userRepository.save(any(User.class))).thenThrow(new DuplicateKeyException("user already exists"));
 
         // when & then
