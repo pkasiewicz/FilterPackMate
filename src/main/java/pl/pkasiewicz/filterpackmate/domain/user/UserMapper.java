@@ -1,22 +1,31 @@
 package pl.pkasiewicz.filterpackmate.domain.user;
 
-import pl.pkasiewicz.filterpackmate.domain.user.dto.UserRequestDto;
-import pl.pkasiewicz.filterpackmate.domain.user.dto.UserResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.RegisterUserDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
+import pl.pkasiewicz.filterpackmate.domain.user.dto.UserDto;
 
 class UserMapper {
 
-     static User mapToEntity(UserRequestDto userRequestDto) {
+     static User mapToEntity(RegisterUserDto registerUserDto) {
         return User.builder()
-                .username(userRequestDto.username())
-                .password(userRequestDto.password())
+                .username(registerUserDto.username())
+                .password(registerUserDto.password())
                 .build();
     }
 
-    static UserResponseDto mapToUserResponseDto(User user) {
-         return UserResponseDto.builder()
-                 .id(user.id)
-                 .username(user.username)
-                 .password(user.password)
+    static RegistrationResultDto mapToRegistrationResultDto(User entity) {
+         return RegistrationResultDto.builder()
+                 .id(entity.getId())
+                 .username(entity.getUsername())
+                 .password(entity.getPassword())
                  .build();
+    }
+
+    static UserDto mapToUserDto(User entity) {
+        return UserDto.builder()
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .password(entity.getPassword())
+                .build();
     }
 }
