@@ -1,0 +1,36 @@
+package pl.pkasiewicz.filterpackmate.infrastructure.swagger;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+                .components(new Components()
+                        .addSecuritySchemes("BearerAuth", new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")))
+                .info(new Info()
+                        .title("FilterPackMate API")
+                        .version("1.0")
+                        .description("To authorize, generate a token using the `/token` endpoint, then click \"Authorize\" and paste your token with \"Bearer \" at the beginning.")
+                        .contact(new Contact()
+                                .name("Piotr Kasiewicz")
+                                .url("https://www.linkedin.com/in/piotr-kasiewicz/ ")
+                                .email("ptrkasiewicz@gmail.com"))
+                        .termsOfService("https://github.com/pkasiewicz "));
+    }
+}
