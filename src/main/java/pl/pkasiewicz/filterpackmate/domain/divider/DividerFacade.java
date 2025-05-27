@@ -6,6 +6,7 @@ import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.exceptions.DividerNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -31,8 +32,10 @@ public class DividerFacade {
                 .orElseThrow(() -> new DividerNotFoundException("divider not found"));
     }
 
-    public Divider getDividerEntityById(Long id) {
-        return dividerRepository.findById(id)
-                .orElseThrow(() -> new DividerNotFoundException("divider not found"));
+    public Optional<Divider> getDividerEntityById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return dividerRepository.findById(id);
     }
 }
