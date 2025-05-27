@@ -6,6 +6,7 @@ import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.side.exceptions.SideNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -31,8 +32,10 @@ public class SideFacade {
                 .orElseThrow(() -> new SideNotFoundException("side not found"));
     }
 
-    public Side getSideEntityById(Long id) {
-        return sideRepository.findById(id)
-                .orElseThrow(() -> new SideNotFoundException("side not found"));
+    public Optional<Side> getSideEntityById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return sideRepository.findById(id);
     }
 }

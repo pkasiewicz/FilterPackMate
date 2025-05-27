@@ -21,7 +21,7 @@ public class ProductMapper {
                 .filtersPerCarton(entity.getFiltersPerCarton())
                 .cartonsPerPallet(entity.getCartonsPerPallet())
                 .filtersPerPallet(entity.getFiltersPerPallet())
-                .pallet(entity.getPallet())
+                .palletType(entity.getPallet().name())
                 .dividers(
                         Optional.ofNullable(entity.getDividers())
                                 .orElseGet(List::of)

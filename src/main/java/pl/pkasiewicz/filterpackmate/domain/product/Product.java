@@ -29,14 +29,14 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "carton_id")
     private Carton carton;
-    private int filtersPerCarton;
+    private Integer filtersPerCarton;
     @ManyToOne
     @JoinColumn(name = "tray_id")
     private Tray tray;
     @Enumerated(EnumType.STRING)
     private Pallet pallet;
-    private int cartonsPerPallet;
-    private int filtersPerPallet;
+    private Integer cartonsPerPallet;
+    private Integer filtersPerPallet;
     @ManyToMany
     @JoinTable(
             name = "product_divider",

@@ -24,8 +24,10 @@
         <testcontainers.version>1.17.4</testcontainers.version>
         <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <postgresql.version>42.7.5</postgresql.version>
+        <testcontainers-postgresql.version>1.20.0</testcontainers-postgresql.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-security.version>1.8.0</springdoc-openapi-security.version>
     </properties>
 
     <dependencies>
@@ -120,8 +122,8 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mongodb</artifactId>
-            <version>${testcontainers.version}</version>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers-postgresql.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -146,9 +148,14 @@
         </dependency>
         <!--        SWAGGER  http://localhost:8080/swagger-ui/index.html#/-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>${springfox-boot-starter.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>${springdoc-openapi-security.version}</version>
         </dependency>
     </dependencies>
 

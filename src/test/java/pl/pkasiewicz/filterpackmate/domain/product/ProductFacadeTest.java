@@ -60,7 +60,7 @@ class ProductFacadeTest {
                 1,
                 1L,
                 1L,
-                Pallet.EURO,
+                "EURO",
                 List.of(1L),
                 List.of(1L),
                 1L
@@ -86,9 +86,9 @@ class ProductFacadeTest {
 
         when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(new Carton(1L, "PCA-12", new ArrayList<>()));
         when(trayFacade.getTrayEntityById(anyLong())).thenReturn(new Tray(1L, "DE165", new ArrayList<>()));
-        when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(new Divider(1L, "E-1", 100, new ArrayList<>()));
-        when(sideFacade.getSideEntityById(anyLong())).thenReturn(new Side(1L, "BE900B", new ArrayList<>()));
-        when(cornerFacade.getCornerEntityById(anyLong())).thenReturn(new Corner(1L, "CP850", new ArrayList<>()));
+        when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(Optional.of(new Divider(1L, "E-1", 100, new ArrayList<>())));
+        when(sideFacade.getSideEntityById(anyLong())).thenReturn(Optional.of(new Side(1L, "BE900B", new ArrayList<>())));
+        when(cornerFacade.getCornerEntityById(anyLong())).thenReturn(Optional.of(new Corner(1L, "CP850", new ArrayList<>())));
 
         when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
 
@@ -228,7 +228,7 @@ class ProductFacadeTest {
                 1,
                 1L,
                 1L,
-                Pallet.EURO,
+                "EURO",
                 List.of(1L),
                 List.of(1L),
                 1L

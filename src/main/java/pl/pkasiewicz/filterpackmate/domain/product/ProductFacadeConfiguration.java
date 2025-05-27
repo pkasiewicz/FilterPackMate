@@ -9,7 +9,7 @@ import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
 import pl.pkasiewicz.filterpackmate.domain.tray.TrayFacade;
 
 @Configuration
-class ProductFacadeConfiguration {
+public class ProductFacadeConfiguration {
 
     @Bean
     ProductFacade productFacade(ProductRepository productRepository,

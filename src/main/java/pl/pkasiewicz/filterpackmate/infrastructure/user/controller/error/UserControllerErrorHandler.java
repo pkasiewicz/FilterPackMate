@@ -37,7 +37,7 @@ class UserControllerErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
-    public UserErrorResponse handleUserDuplicationException(UsernameAlreadyExistsException e) {
+    public UserErrorResponse handleUserDuplicationException() {
         return new UserErrorResponse(USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
     }
 }

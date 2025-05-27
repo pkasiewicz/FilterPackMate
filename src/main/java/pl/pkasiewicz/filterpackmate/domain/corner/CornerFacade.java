@@ -6,6 +6,7 @@ import pl.pkasiewicz.filterpackmate.domain.corner.dto.CornerResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.corner.exceptions.CornerNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -31,8 +32,10 @@ public class CornerFacade {
                 .orElseThrow(() -> new CornerNotFoundException("corner not found"));
     }
 
-    public Corner getCornerEntityById(Long id) {
-        return cornerRepository.findById(id)
-                .orElseThrow(() -> new CornerNotFoundException("corner not found"));
+    public Optional<Corner> getCornerEntityById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return cornerRepository.findById(id);
     }
 }

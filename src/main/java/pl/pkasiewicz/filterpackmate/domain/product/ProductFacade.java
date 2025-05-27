@@ -16,7 +16,9 @@ import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 import pl.pkasiewicz.filterpackmate.domain.tray.TrayFacade;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class ProductFacade {
@@ -33,7 +35,7 @@ public class ProductFacade {
         return productDtos.stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.productId())
-                            .orElseThrow(() -> new ProductNotFoundException("product not found"));
+                            .orElseThrow(() -> new ProductNotFoundException("Product not found"));
                     return productCalculationService.calculatePackingMaterials(product, dto.productQty());
                 }).toList();
     }
@@ -46,7 +48,7 @@ public class ProductFacade {
     public ProductResponseDto getProductById(Long id) {
         return productRepository.findById(id)
                 .map(ProductMapper::mapToDto)
-                .orElseThrow(() -> new ProductNotFoundException("product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
     public List<ProductResponseDto> getAllProducts() {
@@ -61,14 +63,14 @@ public class ProductFacade {
         Tray tray = getTray(dto);
         List<Divider> dividers = getDividers(dto);
         List<Side> sides = getSides(dto);
-        Corner corner = getCorner(dto);
+        Corner corner = getCorner(dto).orElse(null);
 
         return Product.builder()
                 .name(dto.name())
                 .carton(carton)
                 .filtersPerCarton(dto.filtersPerCarton())
                 .tray(tray)
-                .pallet(dto.pallet())
+                .pallet(Pallet.valueOf(dto.palletType()))
                 .cartonsPerPallet(dto.cartonsPerPallet())
                 .filtersPerPallet(dto.filtersPerPallet())
                 .dividers(dividers)
@@ -86,20 +88,26 @@ public class ProductFacade {
     }
 
     private List<Divider> getDividers(ProductRequestDto dto) {
-        return dto.dividerIds()
-                .stream()
-                .map(dividerFacade::getDividerEntityById)
+        if (dto.dividerIds() == null) {
+            return Collections.emptyList();
+        }
+
+        return dto.dividerIds().stream()
+                .flatMap(id -> dividerFacade.getDividerEntityById(id).stream())
                 .toList();
     }
 
     private List<Side> getSides(ProductRequestDto dto) {
-        return dto.sideIds()
-                .stream()
-                .map(sideFacade::getSideEntityById)
+        if (dto.sideIds() == null) {
+            return Collections.emptyList();
+        }
+
+        return dto.sideIds().stream()
+                .flatMap(id -> sideFacade.getSideEntityById(id).stream())
                 .toList();
     }
 
-    private Corner getCorner(ProductRequestDto dto) {
+    private Optional<Corner> getCorner(ProductRequestDto dto) {
         return cornerFacade.getCornerEntityById(dto.cornerId());
     }
 }
