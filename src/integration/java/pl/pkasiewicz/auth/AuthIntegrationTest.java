@@ -2,11 +2,13 @@ package pl.pkasiewicz.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import pl.pkasiewicz.BaseIntegrationTest;
-import pl.pkasiewicz.filterpackmate.domain.user.UserRepository;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
 import pl.pkasiewicz.filterpackmate.infrastructure.security.jwt.JwtConfigurationProperties;
 import pl.pkasiewicz.filterpackmate.infrastructure.user.controller.dto.JwtResponseDto;

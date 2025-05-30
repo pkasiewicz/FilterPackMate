@@ -1,7 +1,6 @@
 package pl.pkasiewicz.testdata;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
 import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonRequestDto;
