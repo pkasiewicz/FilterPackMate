@@ -1,0 +1,5 @@
+auth:
+  jwt:
+    expirationDays: 1
+    secret: test-secret-key-for-jwt-signing
+    issuer: filterpackmate-backend

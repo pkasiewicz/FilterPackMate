@@ -1,4 +1,4 @@
-package pl.pkasiewicz.filterpackmate.infrastructure.side;
+package pl.pkasiewicz.filterpackmate.infrastructure.side.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

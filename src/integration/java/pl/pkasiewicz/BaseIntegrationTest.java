@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import pl.pkasiewicz.filterpackmate.FilterPackMateApplication;
+import pl.pkasiewicz.testdata.TestDataConfiguration;
 
 @SpringBootTest(classes = { FilterPackMateApplication.class, TestDataConfiguration.class })
 @ActiveProfiles("integration")

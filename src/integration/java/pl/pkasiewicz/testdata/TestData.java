@@ -1,11 +1,13 @@
-package pl.pkasiewicz;
+package pl.pkasiewicz.testdata;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
 import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
+import pl.pkasiewicz.filterpackmate.domain.corner.dto.CornerRequestDto;
+import pl.pkasiewicz.filterpackmate.domain.corner.dto.CornerResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerResponseDto;
@@ -26,19 +28,14 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class TestData {
 
-    @Autowired
     private final ProductFacade productFacade;
-    @Autowired
     private final CartonFacade cartonFacade;
-    @Autowired
     private final TrayFacade trayFacade;
-    @Autowired
     private final DividerFacade dividerFacade;
-    @Autowired
     private final SideFacade sideFacade;
+    private final CornerFacade cornerFacade;
 
-    // --- CARTONS ---
-    List<CartonResponseDto> createAndSaveCartons() {
+    public List<CartonResponseDto> createAndSaveCartons() {
         return Stream.of(
                         CartonRequestDto.builder().name("PC-A-19").build(),
                         CartonRequestDto.builder().name("ERBL205190").build(),
@@ -49,8 +46,7 @@ public class TestData {
                 .toList();
     }
 
-    // --- TRAYS ---
-    List<TrayResponseDto> createAndSaveTrays() {
+    public List<TrayResponseDto> createAndSaveTrays() {
         return Stream.of(
                         TrayRequestDto.builder().name("DE163").build(),
                         TrayRequestDto.builder().name("BE205190").build(),
@@ -61,8 +57,7 @@ public class TestData {
                 .toList();
     }
 
-    // --- DIVIDERS ---
-    List<DividerResponseDto> createAndSaveDividers() {
+    public List<DividerResponseDto> createAndSaveDividers() {
         return Stream.of(
                         DividerRequestDto.builder().name("Divider-1").quantityPerPallet(4).build(),
                         DividerRequestDto.builder().name("Divider-2").quantityPerPallet(4).build(),
@@ -71,12 +66,21 @@ public class TestData {
                 .toList();
     }
 
-    // --- SIDES ---
-    List<SideResponseDto> createAndSaveSides() {
+    public List<SideResponseDto> createAndSaveSides() {
         return Stream.of(
                         SideRequestDto.builder().name("Side-A").build(),
                         SideRequestDto.builder().name("Side-B").build()
                 ).map(sideFacade::saveSide)
+                .toList();
+    }
+
+    public List<CornerResponseDto> createAndSaveCorners() {
+        return Stream.of(
+                        CornerRequestDto.builder().name("CP800").build(),
+                        CornerRequestDto.builder().name("CP850").build(),
+                        CornerRequestDto.builder().name("CP900").build()
+
+                ).map(cornerFacade::saveCorner)
                 .toList();
     }
 

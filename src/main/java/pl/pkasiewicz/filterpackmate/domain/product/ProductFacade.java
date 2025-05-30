@@ -10,6 +10,7 @@ import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductPackagingCalculationRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductAlreadyExistsException;
 import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
@@ -23,6 +24,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductFacade {
 
+    public static final String PRODUCT_ALREADY_EXISTS = "Product already exists";
+    public static final String PRODUCT_NOT_FOUND = "Product not found";
     private final ProductRepository productRepository;
     private final CartonFacade cartonFacade;
     private final TrayFacade trayFacade;
@@ -35,20 +38,24 @@ public class ProductFacade {
         return productDtos.stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.productId())
-                            .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+                            .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
                     return productCalculationService.calculatePackingMaterials(product, dto.productQty());
                 }).toList();
     }
 
-    public ProductResponseDto saveProduct(ProductRequestDto dto) {
-        Product product = getProduct(dto);
+    public ProductResponseDto saveProduct(ProductRequestDto productRequestDto) {
+        if (productRepository.existsByName(productRequestDto.name())) {
+            throw new ProductAlreadyExistsException(PRODUCT_ALREADY_EXISTS);
+        }
+
+        Product product = getProduct(productRequestDto);
         return ProductMapper.mapToDto(productRepository.save(product));
     }
 
     public ProductResponseDto getProductById(Long id) {
         return productRepository.findById(id)
                 .map(ProductMapper::mapToDto)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
     }
 
     public List<ProductResponseDto> getAllProducts() {

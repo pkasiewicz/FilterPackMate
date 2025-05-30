@@ -7,10 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.BadCredentialsException;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegisterUserDto;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.UserDto;
-import pl.pkasiewicz.filterpackmate.domain.user.exceptions.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -72,7 +72,7 @@ class UserFacadeTest {
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(UserNotFoundException.class, () -> userFacade.findByUsername(username));
+        assertThrows(BadCredentialsException.class, () -> userFacade.findByUsername(username));
 
         verify(userRepository).findByUsername(username);
     }

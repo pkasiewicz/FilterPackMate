@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartonRepository extends JpaRepository<Carton, Long> {
+    boolean existsByName(String name);
 }
