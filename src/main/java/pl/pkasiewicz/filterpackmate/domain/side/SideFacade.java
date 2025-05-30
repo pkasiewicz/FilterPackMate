@@ -5,7 +5,6 @@ import pl.pkasiewicz.filterpackmate.domain.side.dto.SideRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.side.exceptions.SideAlreadyExistsException;
 import pl.pkasiewicz.filterpackmate.domain.side.exceptions.SideNotFoundException;
-import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;

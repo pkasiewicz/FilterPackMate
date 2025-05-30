@@ -5,7 +5,6 @@ import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerResponseDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.exceptions.DividerAlreadyExistsException;
 import pl.pkasiewicz.filterpackmate.domain.divider.exceptions.DividerNotFoundException;
-import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
