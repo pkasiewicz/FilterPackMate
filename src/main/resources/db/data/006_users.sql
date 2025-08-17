@@ -1,1 +1,1 @@
--- INSERT INTO users (username, password) VALUES ("admin1", "admin1");
+-- INSERT INTO users (username, password) VALUES ('admin', '$2a$10$rM7ONjOkSEP0xnFuP/Q.Qu9ae2IsA1SlIP8PJWmoZtWkYQClbnZ5O');

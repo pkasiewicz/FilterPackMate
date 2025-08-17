@@ -1,3 +1,5 @@
+INSERT INTO sides (name) VALUES ('GW');
+INSERT INTO sides (name) VALUES ('JW');
 INSERT INTO sides (name) VALUES ('BE760A');
 INSERT INTO sides (name) VALUES ('BE760B');
 INSERT INTO sides (name) VALUES ('BE770A');
