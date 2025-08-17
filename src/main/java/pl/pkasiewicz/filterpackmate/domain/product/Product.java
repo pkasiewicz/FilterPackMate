@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
-import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
-import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 
 import java.util.ArrayList;
@@ -44,14 +42,8 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "divider_id")
     )
     private List<Divider> dividers = new ArrayList<>();
-    @ManyToMany
-    @JoinTable(
-            name = "product_side",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "side_id")
-    )
-    private List<Side> sides = new ArrayList<>();
-    @ManyToOne
-    @JoinColumn(name = "corner_id")
-    private Corner corner;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductSide> productSides = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductCorner> productCorners = new ArrayList<>();
 }
