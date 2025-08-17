@@ -27,13 +27,9 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private final JwtConfigurationProperties properties;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
-
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,11 +39,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JWTVerificationException e) {
             log.warn("JWT verification failed: {}", e.getMessage());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
-            return;
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-            return;
+            log.warn("JWT processing failed: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
