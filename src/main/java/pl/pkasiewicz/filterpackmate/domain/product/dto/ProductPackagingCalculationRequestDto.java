@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record ProductPackagingCalculationRequestDto(
         Long productId,
-        int productQty
+        int productQty,
+        boolean isLotted
 ) {
 }

@@ -2,8 +2,13 @@ package pl.pkasiewicz.filterpackmate.domain.product;
 
 import lombok.AllArgsConstructor;
 import pl.pkasiewicz.filterpackmate.domain.carton.exceptions.CartonNotFoundException;
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerMapper;
+import pl.pkasiewicz.filterpackmate.domain.corner.dto.CornerDto;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerMapper;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.PackagingCalculationDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductCornerDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSideDto;
 import pl.pkasiewicz.filterpackmate.domain.side.SideMapper;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 import pl.pkasiewicz.filterpackmate.domain.tray.excteptions.TrayNotFoundException;
@@ -19,22 +24,18 @@ class ProductCalculationService {
     private static final int NUMBER_OF_CORNERS_FOR_PALLET = 4;
     private static final int NUMBER_OF_SIDES_FOR_PALLET = 2;
 
-    PackagingCalculationDto calculatePackingMaterials(Product product, int productQty) {
+    PackagingCalculationDto calculatePackingMaterials(Product product, int productQty, boolean isLotted) {
         if (product.getCarton() == null) throw new CartonNotFoundException("Carton is required");
         if (product.getTray() == null) throw new TrayNotFoundException("Tray is required");
 
         int neededCartons = calculateNeededCartons(product, productQty);
-        int neededTrays = calculateNeededTrays(neededCartons);
+        int neededTrays = calculateNeededTrays(product, neededCartons);
 
         int palletsNeeded = calculateNeededPallets(product, productQty);
 
         Set<DividerDto> neededDividers = getNeededDividers(product);
-        Set<SideDto> neededSides = calculateNeededSides(product, palletsNeeded);
-
-        Integer neededCorner = null;
-        if (product.getCorner() != null) {
-            neededCorner = calculateNeededCorner(palletsNeeded);
-        }
+        Set<ProductSideDto> neededSides = calculateNeededSides(product, palletsNeeded, isLotted);
+        Set<ProductCornerDto> neededCorners = calculateNeededCorners(product, palletsNeeded, isLotted);
 
         return new PackagingCalculationDto(
                 product.getId(),
@@ -46,17 +47,27 @@ class ProductCalculationService {
                 neededTrays,
                 neededDividers,
                 neededSides,
-                neededCorner);
+                neededCorners,
+                product.getPallet().name(),
+                palletsNeeded
+        );
     }
 
     private int calculateNeededCartons(Product product, int productQty) {
-        int filtersPerCarton = product.getFiltersPerCarton();
-        if (filtersPerCarton == 0) throw new IllegalArgumentException("Cartons per pallet cannot be zero");
-        return (int) Math.ceil((double) productQty / filtersPerCarton);
+        if (product.getFiltersPerCarton() == null) //todo
+            return 150;
+        else {
+            int filtersPerCarton = product.getFiltersPerCarton();
+            if (filtersPerCarton == 0) throw new IllegalArgumentException("Cartons per pallet cannot be zero");
+            return (int) Math.ceil((double) productQty / filtersPerCarton);
+        }
     }
 
-    private int calculateNeededTrays(int neededCartons) {
-        return neededCartons * 2;
+    private int calculateNeededTrays(Product product, int neededCartons) {
+        if (product.getFiltersPerCarton() == null) //todo
+            return 200;
+        else
+            return neededCartons * 2;
     }
 
     private int calculateNeededPallets(Product product, int productQty) {
@@ -73,16 +84,87 @@ class ProductCalculationService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<SideDto> calculateNeededSides(Product product, int palletsNeeded) {
-        return Optional.ofNullable(product.getSides())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(SideMapper::mapToSideDto)
-                .map(sideDto -> sideDto.toBuilder().sideQty(palletsNeeded * NUMBER_OF_SIDES_FOR_PALLET).build())
-                .collect(Collectors.toSet());
+    private Set<ProductSideDto> calculateNeededSides(Product product, int palletsNeeded, boolean isLotted) {
+        if (!isLotted) {
+            return Optional.ofNullable(product.getProductSides())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(productSide -> !productSide.isLotted())
+                    .map(productSide -> mapToProductSideDto(productSide, palletsNeeded))
+                    .collect(Collectors.toSet());
+        } else {
+            return Optional.ofNullable(product.getProductSides())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(productSide -> mapToProductSideDto(productSide, palletsNeeded))
+                    .collect(Collectors.toSet());
+        }
     }
 
-    private int calculateNeededCorner(int pallets) {
-        return pallets * NUMBER_OF_CORNERS_FOR_PALLET;
+    private ProductSideDto mapToProductSideDto(ProductSide productSide, int palletsNeeded) {
+        SideDto sideDto = SideMapper.mapToSideDto(productSide.getSide())
+                .toBuilder()
+                .sideQty(palletsNeeded * NUMBER_OF_SIDES_FOR_PALLET)
+                .build();
+
+        return ProductSideDto.builder()
+                .side(sideDto)
+                .isLotted(productSide.isLotted())
+                .build();
     }
+
+
+    private Set<ProductCornerDto> calculateNeededCorners(Product product, int palletsNeeded, boolean isLotted) {
+        if (!isLotted) {
+            return Optional.ofNullable(product.getProductCorners())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(productCorner -> !productCorner.isLotted())
+                    .map(productCorner -> mapToProductCornerDto(productCorner, palletsNeeded))
+                    .collect(Collectors.toSet());
+        } else {
+            return Optional.ofNullable(product.getProductCorners())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(productCorner -> mapToProductCornerDto(productCorner, palletsNeeded))
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    private ProductCornerDto mapToProductCornerDto(ProductCorner productCorner, int palletsNeeded) {
+        CornerDto cornerDto = CornerMapper.mapToCornerDto(productCorner.getCorner())
+                .toBuilder()
+                .cornerQty(palletsNeeded * NUMBER_OF_CORNERS_FOR_PALLET)
+                .build();
+
+        return ProductCornerDto.builder()
+                .corner(cornerDto)
+                .isLotted(productCorner.isLotted())
+                .build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    <T> Set<T> calculateItems(List<?> items, Function<?, Boolean> isLottedCheck, BiFunction<?, Integer, T> mapper, boolean isLotted) {
+//        return Optional.ofNullable(items)
+//                .orElse(Collections.emptyList())
+//                .stream()
+//                .filter(item -> isLottedCheck.apply(item) == isLotted || !isLottedCheck.apply(item))
+//                .map(item -> mapper.apply(item, palletsNeeded))
+//                .collect(Collectors.toSet());
+//    }
+
+//    calculateItems(product.getProductSides(), ps -> ps.isLotted(), this::mapToProductSideDto, isLotted);
 }
