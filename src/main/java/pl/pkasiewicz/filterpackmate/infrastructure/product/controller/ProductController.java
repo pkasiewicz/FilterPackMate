@@ -10,19 +10,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.PackagingCalculationDto;
 import pl.pkasiewicz.filterpackmate.domain.product.ProductFacade;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductPackagingCalculationRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @AllArgsConstructor
 @Tag(name = "Product Management", description = "Operations related to products")
 public class ProductController {
 
     private final ProductFacade productFacade;
+
+    @PostMapping("/calculate")
+    public ResponseEntity<List<PackagingCalculationDto>> createProduct(@RequestBody List<ProductPackagingCalculationRequestDto> request) {
+        List<PackagingCalculationDto> productsWithPackaging = productFacade.getProductsWithPackaging(request);
+        return ResponseEntity.ok(productsWithPackaging);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID", description = "Returns a single product based on the provided ID",
@@ -42,7 +50,7 @@ public class ProductController {
         return ResponseEntity.ok(productFacade.getAllProducts());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Create a new product", description = "Adds a new product to the system",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Product created successfully",
@@ -52,4 +60,17 @@ public class ProductController {
             @Parameter(description = "Product object to be created") @RequestBody ProductRequestDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productFacade.saveProduct(dto));
     }
+
+//    @PutMapping("/{id}/edit")
+//    public ResponseEntity<ProductResponseDto> updateProduct(
+//            @PathVariable Long id,
+//            @RequestBody ProductRequestDto dto) {
+//        return ResponseEntity.ok(productFacade.updateProduct(id, dto));
+//    }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+//        productFacade.deleteProduct(id);
+//        return ResponseEntity.noContent().build();
+//    }
 }

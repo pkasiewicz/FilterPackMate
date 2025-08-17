@@ -14,7 +14,7 @@ import pl.pkasiewicz.filterpackmate.domain.carton.dto.CartonResponseDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cartons")
+@RequestMapping("/api/cartons")
 @AllArgsConstructor
 @Tag(name = "Carton Management", description = "Operations related to cartons")
 public class CartonController {
@@ -37,7 +37,7 @@ public class CartonController {
         return ResponseEntity.ok(cartonFacade.getAllCartons());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Add a new carton", description = "Creates and returns the saved carton",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Carton created successfully")

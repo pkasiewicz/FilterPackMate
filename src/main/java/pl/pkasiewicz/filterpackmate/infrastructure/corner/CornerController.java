@@ -14,7 +14,7 @@ import pl.pkasiewicz.filterpackmate.domain.corner.dto.CornerResponseDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/corners")
+@RequestMapping("/api/corners")
 @AllArgsConstructor
 @Tag(name = "Corner Management", description = "Operations related to corners")
 public class CornerController {
@@ -37,7 +37,7 @@ public class CornerController {
         return ResponseEntity.ok(cornerFacade.getAllCorners());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Add a new corner", description = "Saves and returns the new corner",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Corner created")
