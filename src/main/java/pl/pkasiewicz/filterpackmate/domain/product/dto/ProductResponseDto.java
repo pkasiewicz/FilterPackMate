@@ -2,7 +2,6 @@ package pl.pkasiewicz.filterpackmate.domain.product.dto;
 
 import lombok.Builder;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerDto;
-import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public record ProductResponseDto (
         Integer filtersPerPallet,
         String palletType,
         List<DividerDto> dividers,
-        List<SideDto> sides,
-        Long cornerId
+        List<ProductSideDto> productSides,
+        List<ProductCornerDto> productCorners
 ) {
 }

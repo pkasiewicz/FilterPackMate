@@ -5,10 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.pkasiewicz.BaseIntegrationTest;
 import pl.pkasiewicz.filterpackmate.domain.product.Pallet;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.user.UserRepository;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
 import pl.pkasiewicz.filterpackmate.infrastructure.user.controller.dto.JwtResponseDto;
 import pl.pkasiewicz.testdata.TestDataHelper;
@@ -29,8 +31,9 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
     private TestDataHelper testDataHelper;
 
     @BeforeEach
-    void setUp() {
-        testDataHelper.deleteAllData();
+    void clearAuthentication(@Autowired UserRepository userRepository) {
+        SecurityContextHolder.clearContext();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -40,7 +43,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 1: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
         // given && when
-        ResultActions failedLoginRequest = mockMvc.perform(post("/token")
+        ResultActions failedLoginRequest = mockMvc.perform(post("/api/token")
                 .content("""
                         {
                             "username": "someUser",
@@ -62,7 +65,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 2: user made GET /products with no jwt token and system returned UNAUTHORIZED(401)
         // given && when
-        ResultActions failedGetOffersRequest = mockMvc.perform(get("/products")
+        ResultActions failedGetOffersRequest = mockMvc.perform(get("/api/products")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
         // then
@@ -71,7 +74,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 3: user made POST /register with username=someUser, password=somePassword and system registered user with status CREATED(201)
         // given && when
-        ResultActions registeredUser = mockMvc.perform(post("/register")
+        ResultActions registeredUser = mockMvc.perform(post("/api/register")
                 .content("""
                         {
                             "username": "someUser",
@@ -95,7 +98,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 4: user made POST /register with username=someUser, password=somePassword and system returned user already exists with status CONFLICT(409)
         // given && when
-        ResultActions duplicateRegistrationRequest = mockMvc.perform(post("/register")
+        ResultActions duplicateRegistrationRequest = mockMvc.perform(post("/api/register")
                 .content("""
                         {
                             "username": "someUser",
@@ -111,7 +114,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 5: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
         // given && when
-        ResultActions succeedLoginRequest = mockMvc.perform(post("/token")
+        ResultActions succeedLoginRequest = mockMvc.perform(post("/api/token")
                 .content("""
                         {
                             "username": "someUser",
@@ -136,12 +139,13 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
 
         // step 6: four products was added to database
+        testDataHelper.deleteAllData();
         testDataHelper.prepareDefaultProductData();
 
 
         // step 7: user made GET /products with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 4 products
         // given && when
-        ResultActions performGetResultWithFourProducts = mockMvc.perform(get("/products")
+        ResultActions performGetResultWithFourProducts = mockMvc.perform(get("/api/products")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
@@ -163,23 +167,23 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
         );
 
 
-        // step 8: user made POST /products with header “Authorization: Bearer AAAA.BBBB.CCC” and products and system returned CREATED(201) with saved offer
+        // step 8: user made POST /products/add with header “Authorization: Bearer AAAA.BBBB.CCC” and products and system returned CREATED(201) with saved offer
         // given && when
-        ResultActions performPostRequestWithProduct = mockMvc.perform(post("/products")
+        ResultActions performPostRequestWithProduct = mockMvc.perform(post("/api/products/add")
                 .content("""
                             {
                                 "name": "A1",
                                 "filtersPerCarton": 1,
                                 "cartonsPerPallet": 2,
                                 "filtersPerPallet": 3,
-                                "cartonId": 40,
-                                "trayId": 37,
+                                "cartonId": %s,
+                                "trayId": %s,
                                 "palletType": "EURO",
                                 "dividerIds": null,
-                                "sideIds": null,
-                                "cornerId": null
+                                "sideIds": [],
+                                "lottedSideIds": []
                             }
-                        """.trim())
+                        """.trim().formatted(testDataHelper.getCartons().get(0).id(), testDataHelper.getTrays().get(0).id()))
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
@@ -203,14 +207,14 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
                 () -> assertThat(savedProduct.trayName()).isEqualTo(testDataHelper.getTrays().get(0).name()),
                 () -> assertThat(savedProduct.palletType()).isEqualTo(Pallet.EURO.name()),
                 () -> assertThat(savedProduct.dividers()).isEmpty(),
-                () -> assertThat(savedProduct.sides()).isEmpty(),
-                () -> assertThat(savedProduct.cornerId()).isNull()
+                () -> assertThat(savedProduct.productSides()).isEmpty(),
+                () -> assertThat(savedProduct.productCorners()).isEmpty()
         );
 
 
-        // step 9: user made POST /products with header “Authorization: Bearer AAAA.BBBB.CCC” and products and system returned CONFLICT(409)
+        // step 9: user made POST /products/add with header “Authorization: Bearer AAAA.BBBB.CCC” and products and system returned CONFLICT(409)
         // given && when
-        ResultActions performPostRequestWithExistingProduct = mockMvc.perform(post("/products")
+        ResultActions performPostRequestWithExistingProduct = mockMvc.perform(post("/api/products/add")
                 .content("""
                             {
                                 "name": "A1",
@@ -221,8 +225,8 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
                                 "trayId": 37,
                                 "palletType": "EURO",
                                 "dividerIds": null,
-                                "sideIds": null,
-                                "cornerId": null
+                                "sideIds": [],
+                                "lottedSideIds": []
                             }
                         """.trim())
                 .header("Authorization", "Bearer " + token)
@@ -235,7 +239,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 10: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 5 products
         // given && when
-        ResultActions performGetResultWithFiveProducts = mockMvc.perform(get("/products")
+        ResultActions performGetResultWithFiveProducts = mockMvc.perform(get("/api/products")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
@@ -260,7 +264,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
 
         // step 11: user made GET /products/9999 and system returned NOT_FOUND(404) with message “Product not found”
         // given && when
-        ResultActions performGetResultWithNotExistingId = mockMvc.perform(get("/products/9999")
+        ResultActions performGetResultWithNotExistingId = mockMvc.perform(get("/api/products/9999")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
@@ -281,7 +285,7 @@ public class ExampleUserPatchIT extends BaseIntegrationTest {
         ProductResponseDto productInDatabase = testDataHelper.getProducts().get(0);
 
         // when
-        ResultActions performGetResultWithExistingId = mockMvc.perform(get("/products/" + productInDatabase.id())
+        ResultActions performGetResultWithExistingId = mockMvc.perform(get("/api/products/" + productInDatabase.id())
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );

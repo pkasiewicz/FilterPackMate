@@ -1,6 +1,7 @@
 package pl.pkasiewicz.filterpackmate.domain.side;
 
 import pl.pkasiewicz.filterpackmate.domain.product.ProductMapper;
+import pl.pkasiewicz.filterpackmate.domain.product.ProductSide;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
@@ -15,9 +16,10 @@ public class SideMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .products(
-                        Optional.ofNullable(entity.getProducts())
+                        Optional.ofNullable(entity.getProductSides())
                                 .orElseGet(List::of)
                                 .stream()
+                                .map(ProductSide::getProduct)
                                 .map(ProductMapper::mapToProductSummaryDto)
                                 .toList()
                 )

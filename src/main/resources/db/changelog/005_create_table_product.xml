@@ -16,17 +16,14 @@
             <column name="pallet" type="VARCHAR(10)" />
             <column name="filters_per_pallet" type="INTEGER"/>
             <column name="cartons_per_pallet" type="INTEGER"/>
-            <column name="corner_id" type="BIGINT"/>
         </createTable>
+
         <addForeignKeyConstraint baseTableName="products" baseColumnNames="carton_id"
                                  referencedTableName="cartons" referencedColumnNames="id"
                                  constraintName="fk_product_carton"/>
         <addForeignKeyConstraint baseTableName="products" baseColumnNames="tray_id"
                                  referencedTableName="trays" referencedColumnNames="id"
                                  constraintName="fk_product_tray"/>
-        <addForeignKeyConstraint baseTableName="products" baseColumnNames="corner_id"
-                                 referencedTableName="corners" referencedColumnNames="id"
-                                 constraintName="fk_product_corner"/>
     </changeSet>
 
     <changeSet id="005-2" author="pkasiewicz">
@@ -38,12 +35,17 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
         <addForeignKeyConstraint baseTableName="product_divider" baseColumnNames="product_id"
                                  referencedTableName="products" referencedColumnNames="id"
                                  constraintName="fk_pd_product"/>
         <addForeignKeyConstraint baseTableName="product_divider" baseColumnNames="divider_id"
                                  referencedTableName="dividers" referencedColumnNames="id"
                                  constraintName="fk_pd_divider"/>
+
+        <addPrimaryKey tableName="product_divider"
+                       columnNames="product_id, divider_id"
+                       constraintName="pk_product_divider"/>
     </changeSet>
 
     <changeSet id="005-3" author="pkasiewicz">
@@ -55,11 +57,51 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
         <addForeignKeyConstraint baseTableName="product_side" baseColumnNames="product_id"
                                  referencedTableName="products" referencedColumnNames="id"
                                  constraintName="fk_ps_product"/>
         <addForeignKeyConstraint baseTableName="product_side" baseColumnNames="side_id"
                                  referencedTableName="sides" referencedColumnNames="id"
                                  constraintName="fk_ps_side"/>
+
+        <addPrimaryKey tableName="product_side"
+                       columnNames="product_id, side_id"
+                       constraintName="pk_product_side"/>
     </changeSet>
+
+    <changeSet id="005-4" author="pkasiewicz">
+        <addColumn tableName="product_side">
+            <column name="is_lotted" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="005-5" author="pkasiewicz">
+        <createTable tableName="product_corner">
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="product_corner" baseColumnNames="product_id"
+                                 referencedTableName="products" referencedColumnNames="id"
+                                 constraintName="fk_pc_product"/>
+        <addForeignKeyConstraint baseTableName="product_corner" baseColumnNames="corner_id"
+                                 referencedTableName="corners" referencedColumnNames="id"
+                                 constraintName="fk_pc_corner"/>
+
+        <addPrimaryKey tableName="product_corner"
+                       columnNames="product_id, corner_id"
+                       constraintName="pk_product_corner"/>
+    </changeSet>
+
+    <changeSet id="005-6" author="pkasiewicz">
+        <addColumn tableName="product_corner">
+            <column name="is_lotted" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -88,7 +88,8 @@ public class TestData {
             List<CartonResponseDto> cartons,
             List<TrayResponseDto> trays,
             List<DividerResponseDto> dividers,
-            List<SideResponseDto> sides) {
+            List<SideResponseDto> sides,
+            List<CornerResponseDto> corners) {
 
         return Stream.of(
                         ProductRequestDto.builder()
@@ -101,7 +102,9 @@ public class TestData {
                                 .palletType("EURO")
                                 .dividerIds(List.of(dividers.get(0).id(), dividers.get(1).id()))
                                 .sideIds(List.of(sides.get(0).id()))
-                                .cornerId(null)
+                                .lottedSideIds(List.of(sides.get(1).id()))
+                                .cornerId(corners.get(0).id())
+                                .lottedCornerId(corners.get(1).id())
                                 .build(),
 
                         ProductRequestDto.builder()
@@ -114,7 +117,9 @@ public class TestData {
                                 .palletType("EURO")
                                 .dividerIds(List.of(dividers.get(2).id()))
                                 .sideIds(List.of(sides.get(0).id(), sides.get(1).id()))
-                                .cornerId(null)
+                                .lottedSideIds(List.of())
+                                .cornerId(corners.get(0).id())
+                                .lottedCornerId(null)
                                 .build(),
 
                         ProductRequestDto.builder()
@@ -126,8 +131,10 @@ public class TestData {
                                 .trayId(trays.get(2).id())
                                 .palletType("EURO")
                                 .dividerIds(null)
-                                .sideIds(List.of(sides.get(0).id()))
+                                .sideIds(List.of())
+                                .lottedSideIds(List.of(sides.get(0).id()))
                                 .cornerId(null)
+                                .lottedCornerId(corners.get(1).id())
                                 .build(),
 
                         ProductRequestDto.builder()
@@ -139,8 +146,10 @@ public class TestData {
                                 .trayId(trays.get(3).id())
                                 .palletType("EURO")
                                 .dividerIds(List.of(dividers.get(0).id(), dividers.get(1).id()))
-                                .sideIds(null)
+                                .sideIds(List.of())
+                                .lottedSideIds(List.of())
                                 .cornerId(null)
+                                .lottedCornerId(null)
                                 .build()
                 ).map(productFacade::saveProduct)
                 .toList();

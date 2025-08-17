@@ -14,7 +14,7 @@ import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerResponseDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/dividers")
+@RequestMapping("/api/dividers")
 @AllArgsConstructor
 @Tag(name = "Divider Management", description = "Operations related to dividers")
 public class DividerController {
@@ -37,7 +37,7 @@ public class DividerController {
         return ResponseEntity.ok(dividerFacade.getAllDividers());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Add a new divider", description = "Saves and returns the new divider",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Divider created")

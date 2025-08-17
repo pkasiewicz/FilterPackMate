@@ -20,7 +20,7 @@ class CornerControllerIntegrationTest extends CrudModuleIntegrationTest<CornerRe
 
     @Override
     protected String getBaseUrl() {
-        return "/corners";
+        return "/api/corners";
     }
 
     @Override

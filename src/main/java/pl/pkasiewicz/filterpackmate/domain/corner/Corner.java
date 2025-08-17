@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.pkasiewicz.filterpackmate.domain.product.Product;
+import pl.pkasiewicz.filterpackmate.domain.product.ProductCorner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class Corner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "corner")
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "corner", cascade = CascadeType.ALL)
+    private List<ProductCorner> productCorners = new ArrayList<>();
 }
 

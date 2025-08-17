@@ -1,7 +1,41 @@
-version: '3.8'
 services:
+  filterpackmate-backend:
+    container_name: filterpackmate-backend
+#    build: .
+#    image: filterpackmate-backend
+    image: 85.255.6.97:5000/filterpackmate-backend:latest
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - filterpackmate-network
+      - nginx-global
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/filterpackmate_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+
+  filterpackmate-frontend:
+    container_name: filterpackmate-frontend
+#    image: filterpackmate-frontend:latest
+    image: 85.255.6.97:5000/filterpackmate-frontend:latest
+    networks:
+      - filterpackmate-network
+      - nginx-global
+    depends_on:
+      - filterpackmate-backend
+    restart: always
+    ports:
+      - "3000:80"
+
   postgres:
     image: postgres:15
+    networks:
+      - filterpackmate-network
     restart: always
     environment:
       POSTGRES_DB: filterpackmate_db
@@ -14,13 +48,22 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    networks:
+      - filterpackmate-network
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8081:80"
+      - "8083:80"
     depends_on:
       - postgres
 
 volumes:
   pg_data:
+
+networks:
+  filterpackmate-network:
+    name: filterpackmate-network
+    driver: bridge
+  nginx-global:
+    external: true

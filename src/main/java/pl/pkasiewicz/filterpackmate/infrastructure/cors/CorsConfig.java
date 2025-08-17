@@ -13,10 +13,11 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost")
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:5173", "https://fpm.pkasiewicz.pl", "http://85.255.6.97:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
+                        .exposedHeaders("Authorization")
                         .allowCredentials(true)
                         .maxAge(3600);
             }

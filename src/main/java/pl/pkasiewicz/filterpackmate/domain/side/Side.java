@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.pkasiewicz.filterpackmate.domain.product.Product;
+import pl.pkasiewicz.filterpackmate.domain.product.ProductSide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,6 @@ public class Side {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "sides")
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "side", cascade = CascadeType.ALL)
+    private List<ProductSide> productSides = new ArrayList<>();
 }

@@ -14,7 +14,7 @@ import pl.pkasiewicz.filterpackmate.domain.side.dto.SideResponseDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sides")
+@RequestMapping("/api/sides")
 @AllArgsConstructor
 @Tag(name = "Side Management", description = "Operations related to sides")
 public class SideController {
@@ -37,7 +37,7 @@ public class SideController {
         return ResponseEntity.ok(sideFacade.getAllSides());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Add a new side", description = "Saves and returns the new side",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Side created")

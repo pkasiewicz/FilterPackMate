@@ -1,7 +1,10 @@
 package pl.pkasiewicz.filterpackmate.domain.product;
 
+import pl.pkasiewicz.filterpackmate.domain.corner.CornerMapper;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerMapper;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductCornerDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSideDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductSummaryDto;
 import pl.pkasiewicz.filterpackmate.domain.side.SideMapper;
 
@@ -29,12 +32,19 @@ public class ProductMapper {
                                 .map(DividerMapper::mapToDividerDto)
                                 .toList()
                 )
-                .sides(
-                        Optional.ofNullable(entity.getSides())
+                .productSides(
+                        Optional.ofNullable(entity.getProductSides())
                                 .orElseGet(List::of)
                                 .stream()
-                                .map(SideMapper::mapToSideDto)
+                                .map(ProductMapper::mapToProductSideDto)
                                 .toList())
+                .productCorners(
+                        Optional.ofNullable(entity.getProductCorners())
+                                .orElseGet(List::of)
+                                .stream()
+                                .map(ProductMapper::mapToProductCornerDto)
+                                .toList()
+                )
                 .build();
     }
 
@@ -42,6 +52,20 @@ public class ProductMapper {
         return ProductSummaryDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .build();
+    }
+
+    private static ProductSideDto mapToProductSideDto(ProductSide productSide) {
+        return ProductSideDto.builder()
+                .side(SideMapper.mapToSideDto(productSide.getSide()))
+                .isLotted(productSide.isLotted())
+                .build();
+    }
+
+    private static ProductCornerDto mapToProductCornerDto(ProductCorner productCorner) {
+        return ProductCornerDto.builder()
+                .corner(CornerMapper.mapToCornerDto(productCorner.getCorner()))
+                .isLotted(productCorner.isLotted())
                 .build();
     }
 }

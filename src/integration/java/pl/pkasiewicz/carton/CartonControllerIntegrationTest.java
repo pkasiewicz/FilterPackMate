@@ -20,7 +20,7 @@ class CartonControllerIntegrationTest extends CrudModuleIntegrationTest<CartonRe
 
     @Override
     protected String getBaseUrl() {
-        return "/cartons";
+        return "/api/cartons";
     }
 
     @Override

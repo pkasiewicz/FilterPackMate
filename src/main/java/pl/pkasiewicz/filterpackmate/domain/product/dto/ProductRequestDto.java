@@ -15,6 +15,8 @@ public record ProductRequestDto(
         String palletType,
         List<Long> dividerIds,
         List<Long> sideIds,
-        Long cornerId
+        List<Long> lottedSideIds,
+        Long cornerId,
+        Long lottedCornerId
 ) {
 }

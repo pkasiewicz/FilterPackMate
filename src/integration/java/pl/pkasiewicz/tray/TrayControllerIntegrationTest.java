@@ -20,7 +20,7 @@ class TrayControllerIntegrationTest extends CrudModuleIntegrationTest<TrayReques
 
     @Override
     protected String getBaseUrl() {
-        return "/trays";
+        return "/api/trays";
     }
 
     @Override

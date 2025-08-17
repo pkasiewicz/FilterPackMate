@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductFacadeTest {
@@ -63,47 +63,91 @@ class ProductFacadeTest {
                 "EURO",
                 List.of(1L),
                 List.of(1L),
-                1L
-        );
-
-        Product returnedFromDb = new Product(
+                List.of(2L),
                 1L,
-                "A1",
-                new Carton(1L, "PCA-12", new ArrayList<>()),
-                1,
-                new Tray(1L, "DE165", new ArrayList<>()),
-                Pallet.EURO,
-                1,
-                1,
-                List.of(
-                        new Divider(1L, "E-1", 100, new ArrayList<>())
-                ),
-                List.of(
-                        new Side(1L, "BE900B", new ArrayList<>())
-                ),
-                new Corner(1L, "CP850", new ArrayList<>())
+                null
         );
 
-        when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(new Carton(1L, "PCA-12", new ArrayList<>()));
-        when(trayFacade.getTrayEntityById(anyLong())).thenReturn(new Tray(1L, "DE165", new ArrayList<>()));
-        when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(Optional.of(new Divider(1L, "E-1", 100, new ArrayList<>())));
-        when(sideFacade.getSideEntityById(anyLong())).thenReturn(Optional.of(new Side(1L, "BE900B", new ArrayList<>())));
-        when(cornerFacade.getCornerEntityById(anyLong())).thenReturn(Optional.of(new Corner(1L, "CP850", new ArrayList<>())));
+        Carton carton = new Carton(1L, "PCA-12", new ArrayList<>());
+        Tray tray = new Tray(1L, "DE165", new ArrayList<>());
+        Divider divider = new Divider(1L, "E-1", 100, new ArrayList<>());
+        Side side = new Side(1L, "BE900A", new ArrayList<>());
+        Side lottedSide = new Side(2L, "BE900B", new ArrayList<>());
+        Corner corner = new Corner(1L, "CP850", new ArrayList<>());
 
-        when(productRepository.save(any(Product.class))).thenReturn(returnedFromDb);
+        when(cartonFacade.getCartonEntityById(anyLong())).thenReturn(carton);
+        when(trayFacade.getTrayEntityById(anyLong())).thenReturn(tray);
+        when(dividerFacade.getDividerEntityById(anyLong())).thenReturn(Optional.of(divider));
+        when(sideFacade.getSideEntityById(1L)).thenReturn(Optional.of(side));
+        when(sideFacade.getSideEntityById(2L)).thenReturn(Optional.of(lottedSide));
+        when(cornerFacade.getCornerEntityById(1L)).thenReturn(Optional.of(corner));
+
+        Product expectedProduct = Product.builder()
+                .id(1L)
+                .name("A1")
+                .carton(carton)
+                .filtersPerCarton(1)
+                .tray(tray)
+                .pallet(Pallet.EURO)
+                .cartonsPerPallet(1)
+                .filtersPerPallet(1)
+                .dividers(List.of(divider))
+                .build();
+
+        ProductSide productSide = new ProductSide(
+                new ProductSideId(1L, 1L),
+                expectedProduct,
+                side,
+                false
+        );
+
+        ProductSide lottedProductSide = new ProductSide(
+                new ProductSideId(1L, 2L),
+                expectedProduct,
+                lottedSide,
+                true
+        );
+
+        ProductCorner productCorner = new ProductCorner(
+                new ProductCornerId(1L, 1L),
+                expectedProduct,
+                corner,
+                false
+        );
+
+        expectedProduct.setProductSides(List.of(productSide, lottedProductSide));
+        expectedProduct.setProductCorners(List.of(productCorner));
+
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
+            Product product = invocation.getArgument(0);
+            product.setId(1L);
+            return product;
+        });
 
         // when
         ProductResponseDto response = productFacade.saveProduct(productRequestDto);
 
         // then
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
-        verify(productRepository).save(captor.capture());
-        Product savedProduct = captor.getValue();
+        verify(productRepository, times(2)).save(captor.capture());
+        List<Product> allValues = captor.getAllValues();
+        Product firstSave = allValues.get(0);
+        Product secondSave = allValues.get(1);
 
-        assertThat(savedProduct.getCarton().getId()).isEqualTo(returnedFromDb.getCarton().getId());
-        assertThat(savedProduct.getTray().getId()).isEqualTo(returnedFromDb.getTray().getId());
-        assertThat(savedProduct.getPallet()).isEqualTo(returnedFromDb.getPallet());
-        assertThat(response.id()).isEqualTo(returnedFromDb.getId());
+        assertThat(firstSave.getName()).isEqualTo("A1");
+        assertThat(firstSave.getCarton().getId()).isEqualTo(1L);
+        assertThat(firstSave.getTray().getId()).isEqualTo(1L);
+        assertThat(firstSave.getPallet()).isEqualTo(Pallet.EURO);
+        assertThat(response.id()).isEqualTo(1L);
+
+        assertThat(secondSave.getProductSides())
+                .hasSize(2)
+                .extracting(ProductSide::getSide, ProductSide::isLotted)
+                .contains(tuple(side, false), tuple(lottedSide, true));
+        assertThat(secondSave.getProductCorners())
+                .hasSize(1)
+                .extracting(ProductCorner::getCorner, ProductCorner::isLotted)
+                .contains(tuple(corner, false));
     }
 
 
@@ -120,9 +164,9 @@ class ProductFacadeTest {
                         Pallet.EURO,
                         1,
                         1,
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new Corner(1L, "CP850", new ArrayList<>())
+                        List.of(),
+                        List.of(),
+                        List.of()
                 ),
                 new Product(
                         2L,
@@ -133,9 +177,9 @@ class ProductFacadeTest {
                         Pallet.GM6,
                         2,
                         2,
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new Corner(2L, "CP950", new ArrayList<>())
+                        List.of(),
+                        List.of(),
+                        List.of()
                 ),
                 new Product(
                         3L,
@@ -146,9 +190,9 @@ class ProductFacadeTest {
                         Pallet.HG5,
                         3,
                         3,
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new Corner(3L, "CP900", new ArrayList<>())
+                        List.of(),
+                        List.of(),
+                        List.of()
                 )
         );
 
@@ -180,10 +224,8 @@ class ProductFacadeTest {
                 List.of(
                         new Divider(1L, "E-1", 100, new ArrayList<>())
                 ),
-                List.of(
-                        new Side(1L, "BE900B", new ArrayList<>())
-                ),
-                new Corner(1L, "CP850", new ArrayList<>())
+                List.of(),
+                List.of()
         );
 
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
@@ -231,7 +273,9 @@ class ProductFacadeTest {
                 "EURO",
                 List.of(1L),
                 List.of(1L),
-                1L
+                List.of(2L),
+                1L,
+                null
         );
 
         when(productRepository.save(any(Product.class))).thenThrow(new DuplicateKeyException("product already exists"));

@@ -1,6 +1,11 @@
 package pl.pkasiewicz.filterpackmate.infrastructure.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.pkasiewicz.filterpackmate.domain.user.UserFacade;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegisterUserDto;
@@ -16,13 +22,8 @@ import pl.pkasiewicz.filterpackmate.infrastructure.security.jwt.JwtAuthenticatio
 import pl.pkasiewicz.filterpackmate.infrastructure.user.controller.dto.JwtResponseDto;
 import pl.pkasiewicz.filterpackmate.infrastructure.user.controller.dto.TokenRequestDto;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 @RestController
+@RequestMapping("/api")
 @AllArgsConstructor
 @Tag(name = "User Management", description = "Operations related to user registration and authentication")
 public class UserController {

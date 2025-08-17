@@ -14,7 +14,7 @@ import pl.pkasiewicz.filterpackmate.domain.tray.dto.TrayResponseDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/trays")
+@RequestMapping("/api/trays")
 @AllArgsConstructor
 @Tag(name = "Tray Management", description = "Operations related to trays")
 public class TrayController {
@@ -37,7 +37,7 @@ public class TrayController {
         return ResponseEntity.ok(trayFacade.getAllTrays());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "Add a new tray", description = "Saves and returns the new tray",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Tray created")

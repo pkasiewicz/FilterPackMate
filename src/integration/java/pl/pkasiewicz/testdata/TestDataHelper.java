@@ -87,11 +87,9 @@ public class TestDataHelper {
         return testData.createAndSaveTrays();
     }
 
-    private List<CartonResponseDto> getAndSaveCartons() {
-        return testData.createAndSaveCartons();
-    }
+    private List<CartonResponseDto> getAndSaveCartons() { return testData.createAndSaveCartons(); }
 
     private void createProducts() {
-        products = testData.createProducts(cartons, trays, dividers, sides);
+        products = testData.createProducts(cartons, trays, dividers, sides, corners);
     }
 }

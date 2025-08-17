@@ -5,8 +5,10 @@ import pl.pkasiewicz.filterpackmate.domain.carton.Carton;
 import pl.pkasiewicz.filterpackmate.domain.carton.CartonFacade;
 import pl.pkasiewicz.filterpackmate.domain.corner.Corner;
 import pl.pkasiewicz.filterpackmate.domain.corner.CornerFacade;
+import pl.pkasiewicz.filterpackmate.domain.corner.exceptions.CornerNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.divider.Divider;
 import pl.pkasiewicz.filterpackmate.domain.divider.DividerFacade;
+import pl.pkasiewicz.filterpackmate.domain.product.dto.PackagingCalculationDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductPackagingCalculationRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductRequestDto;
 import pl.pkasiewicz.filterpackmate.domain.product.dto.ProductResponseDto;
@@ -14,9 +16,11 @@ import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductAlreadyExis
 import pl.pkasiewicz.filterpackmate.domain.product.exceptions.ProductNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.side.Side;
 import pl.pkasiewicz.filterpackmate.domain.side.SideFacade;
+import pl.pkasiewicz.filterpackmate.domain.side.exceptions.SideNotFoundException;
 import pl.pkasiewicz.filterpackmate.domain.tray.Tray;
 import pl.pkasiewicz.filterpackmate.domain.tray.TrayFacade;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +39,14 @@ public class ProductFacade {
     private final ProductCalculationService productCalculationService;
 
     public List<PackagingCalculationDto> getProductsWithPackaging(List<ProductPackagingCalculationRequestDto> productDtos) {
-        return productDtos.stream()
+        return productDtos
+                .stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.productId())
                             .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
-                    return productCalculationService.calculatePackingMaterials(product, dto.productQty());
-                }).toList();
+                    return productCalculationService.calculatePackingMaterials(product, dto.productQty(), dto.isLotted());
+                })
+                .toList();
     }
 
     public ProductResponseDto saveProduct(ProductRequestDto productRequestDto) {
@@ -48,8 +54,15 @@ public class ProductFacade {
             throw new ProductAlreadyExistsException(PRODUCT_ALREADY_EXISTS);
         }
 
-        Product product = getProduct(productRequestDto);
-        return ProductMapper.mapToDto(productRepository.save(product));
+        Product savedProduct = productRepository.save(getProduct(productRequestDto));
+
+        List<ProductSide> productSides = createProductSides(savedProduct, productRequestDto);
+        List<ProductCorner> productCorners = createProductCorners(savedProduct, productRequestDto);
+
+        savedProduct.setProductSides(productSides);
+        savedProduct.setProductCorners(productCorners);
+
+        return ProductMapper.mapToDto(productRepository.save(savedProduct));
     }
 
     public ProductResponseDto getProductById(Long id) {
@@ -69,8 +82,6 @@ public class ProductFacade {
         Carton carton = getCarton(dto);
         Tray tray = getTray(dto);
         List<Divider> dividers = getDividers(dto);
-        List<Side> sides = getSides(dto);
-        Corner corner = getCorner(dto).orElse(null);
 
         return Product.builder()
                 .name(dto.name())
@@ -81,8 +92,6 @@ public class ProductFacade {
                 .cartonsPerPallet(dto.cartonsPerPallet())
                 .filtersPerPallet(dto.filtersPerPallet())
                 .dividers(dividers)
-                .sides(sides)
-                .corner(corner)
                 .build();
     }
 
@@ -99,22 +108,53 @@ public class ProductFacade {
             return Collections.emptyList();
         }
 
-        return dto.dividerIds().stream()
+        return dto.dividerIds()
+                .stream()
                 .flatMap(id -> dividerFacade.getDividerEntityById(id).stream())
                 .toList();
     }
 
-    private List<Side> getSides(ProductRequestDto dto) {
-        if (dto.sideIds() == null) {
-            return Collections.emptyList();
+    private List<ProductSide> createProductSides(Product product, ProductRequestDto dto) {
+        List<ProductSide> productSides = new ArrayList<>();
+
+        if (dto.sideIds() != null) {
+            dto.sideIds()
+                    .forEach(sideId -> productSides.add(createProductSide(product, sideId, false)));
         }
 
-        return dto.sideIds().stream()
-                .flatMap(id -> sideFacade.getSideEntityById(id).stream())
-                .toList();
+        if (dto.lottedSideIds() != null) {
+            dto.lottedSideIds()
+                    .forEach(sideId -> productSides.add(createProductSide(product, sideId, true)));
+        }
+
+        return productSides;
     }
 
-    private Optional<Corner> getCorner(ProductRequestDto dto) {
-        return cornerFacade.getCornerEntityById(dto.cornerId());
+    private ProductSide createProductSide(Product product, Long sideId, boolean isLotted) {
+        ProductSideId id = new ProductSideId(product.getId(), sideId);
+        Side side = sideFacade.getSideEntityById(sideId).orElseThrow(() -> new SideNotFoundException("Side not found"));
+
+        return new ProductSide(id, product, side, isLotted);
+    }
+
+    private List<ProductCorner> createProductCorners(Product product, ProductRequestDto dto) {
+        List<ProductCorner> productCorner = new ArrayList<>();
+
+        if (dto.cornerId() != null) {
+            productCorner.add(createProductCorner(product, dto.cornerId(), false));
+        }
+
+        if (dto.lottedCornerId() != null) {
+            productCorner.add(createProductCorner(product, dto.lottedCornerId(), true));
+        }
+
+        return productCorner;
+    }
+
+    private ProductCorner createProductCorner(Product product, Long cornerId, boolean isLotted) {
+        ProductCornerId id = new ProductCornerId(product.getId(), cornerId);
+        Corner corner = cornerFacade.getCornerEntityById(cornerId).orElseThrow(() -> new CornerNotFoundException("Corner not found"));
+
+        return new ProductCorner(id, product, corner, isLotted);
     }
 }

@@ -1,8 +1,7 @@
-package pl.pkasiewicz.filterpackmate.domain.product;
+package pl.pkasiewicz.filterpackmate.domain.product.dto;
 
 import lombok.Builder;
 import pl.pkasiewicz.filterpackmate.domain.divider.dto.DividerDto;
-import pl.pkasiewicz.filterpackmate.domain.side.dto.SideDto;
 
 import java.util.Set;
 
@@ -10,12 +9,15 @@ import java.util.Set;
 public record PackagingCalculationDto(
         Long productId,
         String productName,
-        int productQty,
+        Integer productQty,
         String cartonName,
-        int cartonQty,
+        Integer cartonQty,
         String trayName,
-        int trayQty,
+        Integer trayQty,
         Set<DividerDto> dividers,
-        Set<SideDto> sides,
-        Integer cornerQty
-) {}
+        Set<ProductSideDto> sides,
+        Set<ProductCornerDto> corners,
+        String palletType,
+        Integer palletQty
+) {
+}
