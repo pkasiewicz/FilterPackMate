@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+
 import pl.pkasiewicz.BaseIntegrationTest;
 import pl.pkasiewicz.filterpackmate.domain.user.dto.RegistrationResultDto;
 import pl.pkasiewicz.filterpackmate.infrastructure.security.jwt.JwtConfigurationProperties;
@@ -50,7 +51,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     void duplicate_registration_returns_conflict() throws Exception {
         registerUser(validUsername, validPassword); // Try again
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/api/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -72,7 +73,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(4)
     void login_with_invalid_credentials_returns_unauthorized() throws Exception {
-        mockMvc.perform(post("/token")
+        mockMvc.perform(post("/api/token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -87,7 +88,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(5)
     void protected_endpoint_requires_authentication() throws Exception {
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/api/products"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -96,7 +97,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     void protected_endpoint_allows_authenticated_user() throws Exception {
         String token = loginAndGetToken(validUsername, validPassword);
 
-        mockMvc.perform(get("/products")
+        mockMvc.perform(get("/api/products")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
@@ -104,7 +105,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(7)
     void invalid_token_returns_unauthorized() throws Exception {
-        mockMvc.perform(get("/products")
+        mockMvc.perform(get("/api/products")
                         .header("Authorization", "Bearer invalidToken"))
                 .andExpect(status().isUnauthorized());
     }
@@ -113,7 +114,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Order(8)
     void expired_token_returns_unauthorized() throws Exception {
         String expiredToken = generateExpiredToken(); // see below
-        mockMvc.perform(get("/products")
+        mockMvc.perform(get("/api/products")
                         .header("Authorization", "Bearer " + expiredToken))
                 .andExpect(status().isUnauthorized());
     }
@@ -122,7 +123,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Order(9)
     void valid_token_allows_access() throws Exception {
         String validToken = generateValidJwtToken("someUser");
-        mockMvc.perform(get("/products")
+        mockMvc.perform(get("/api/products")
                         .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk());
     }
@@ -135,7 +136,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                 }
                 """.formatted(username, password);
 
-        return mockMvc.perform(post("/register")
+        return mockMvc.perform(post("/api/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andReturn()
@@ -151,7 +152,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                 }
                 """.formatted(username, password);
 
-        String responseJson = mockMvc.perform(post("/token")
+        String responseJson = mockMvc.perform(post("/api/token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())

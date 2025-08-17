@@ -20,7 +20,7 @@ class ProductControllerIntegrationTest extends CrudModuleIntegrationTest<Product
 
     @Override
     protected String getBaseUrl() {
-        return "/products";
+        return "/api/products";
     }
 
     @Override

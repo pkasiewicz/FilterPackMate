@@ -20,7 +20,7 @@ class SideControllerIntegrationTest extends CrudModuleIntegrationTest<SideReques
 
     @Override
     protected String getBaseUrl() {
-        return "/sides";
+        return "/api/sides";
     }
 
     @Override

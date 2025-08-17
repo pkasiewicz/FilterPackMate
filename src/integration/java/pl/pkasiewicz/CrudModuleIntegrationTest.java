@@ -33,7 +33,7 @@ public abstract class CrudModuleIntegrationTest<T, R> extends BaseIntegrationTes
 
     @BeforeEach
     void loginAndGetToken() throws Exception {
-        ResultActions result = mockMvc.perform(post("/register")
+        ResultActions result = mockMvc.perform(post("/api/register")
                 .content("""
             {
                 "username": "someUser",
@@ -48,7 +48,7 @@ public abstract class CrudModuleIntegrationTest<T, R> extends BaseIntegrationTes
         )));
 
         // Get JWT Token
-        ResultActions succeedLoginRequest = mockMvc.perform(post("/token")
+        ResultActions succeedLoginRequest = mockMvc.perform(post("/api/token")
                 .content("""
                         {
                             "username": "someUser",
@@ -82,7 +82,7 @@ public abstract class CrudModuleIntegrationTest<T, R> extends BaseIntegrationTes
 
     protected R createEntity(String token) throws Exception {
         String json = objectMapper.writeValueAsString(getValidExampleDto());
-        String responseJson = mockMvc.perform(post(getBaseUrl())
+        String responseJson = mockMvc.perform(post(getBaseUrl() + "/add")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -133,7 +133,7 @@ public abstract class CrudModuleIntegrationTest<T, R> extends BaseIntegrationTes
         createEntity(token);
 
         String json = objectMapper.writeValueAsString(dto);
-        mockMvc.perform(post(getBaseUrl())
+        mockMvc.perform(post(getBaseUrl() + "/add")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))

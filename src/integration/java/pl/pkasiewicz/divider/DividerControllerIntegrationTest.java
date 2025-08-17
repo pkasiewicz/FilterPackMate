@@ -20,7 +20,7 @@ class DividerControllerIntegrationTest extends CrudModuleIntegrationTest<Divider
 
     @Override
     protected String getBaseUrl() {
-        return "/dividers";
+        return "/api/dividers";
     }
 
     @Override
